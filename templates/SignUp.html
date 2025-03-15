@@ -7,20 +7,22 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="signstyle.css">
+    <link rel="stylesheet" href="static/signstyle.css">
 </head>
 <body>
     <button class="close-button">×</button>
     <button class="login-button">LOGIN</button>
     
-    <form class="container" id="signup-form">
+    <form class="container" id="signup-form" method="POST">
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% endif %}
         <h1>Create your profile</h1>
-
-            <input type="number" placeholder="Age" name="age">
-            <input type="text" placeholder="Name (optional)" name="name">
-            <input type="email" placeholder="Email" name="email">
-            <input type="password" placeholder="Password" name="password">
-        </div>
+    
+        <input type="number" placeholder="Age" name="age" required>
+        <input type="text" placeholder="Name (optional)" name="name">
+        <input type="email" placeholder="Email" name="email" required>
+        <input type="password" placeholder="Password" name="password" required>
     
         <button type="submit" class="create-account-btn">CREATE ACCOUNT</button>
     

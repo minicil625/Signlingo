@@ -10,18 +10,22 @@ def home():
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        username = request.form['username']
-        password = request.form['password']
+        print(request.form)
+        age = request.form.get('age')
+        name = request.form.get('name')
+        email = request.form.get('email')
+        password = request.form.get('password')
 
-        if User.query.filter_by(username=username).first():
-            return "Username already exists."
+        if User.query.filter_by(email=email).first():
+            error_message = "Email already exists. Please use a different one or login."
+            return render_template('SignUp.html', error=error_message)
 
-        new_user = User(username=username, password=password)
+        new_user = User(age=age, name=name, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
-        return redirect(url_for('auth.login'))  # Use `auth.login` since it's inside a Blueprint
+        return render_template('login.html')
 
-    return render_template('register.html')
+    return render_template('SignUp.html')
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
