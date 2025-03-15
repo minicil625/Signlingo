@@ -37,7 +37,7 @@ def login():
         user = User.query.filter_by(email=email, password=password).first()
         if user:
             session['user'] = email
-            return redirect(url_for('auth.home'))  # Use `auth.home` for Blueprint routing
+            return render_template("Dashboard.html") 
         else:
             return "Invalid credentials."
 
