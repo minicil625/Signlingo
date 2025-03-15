@@ -10,7 +10,7 @@ def home():
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
-        print(request.form)
+        print(request.form) #! For debugging delete later
         age = request.form.get('age')
         name = request.form.get('name')
         email = request.form.get('email')
@@ -30,12 +30,13 @@ def register():
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
-        username = request.form['username']
+        print(request.form) #! Debugging delete later
+        email = request.form['email']
         password = request.form['password']
 
-        user = User.query.filter_by(username=username, password=password).first()
+        user = User.query.filter_by(email=email, password=password).first()
         if user:
-            session['user'] = username
+            session['user'] = email
             return redirect(url_for('auth.home'))  # Use `auth.home` for Blueprint routing
         else:
             return "Invalid credentials."

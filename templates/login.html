@@ -16,15 +16,15 @@
     <div class="login-container">
         <h1>Log in</h1>
         
-        <form>
-            <input type="text" placeholder="Email or username">
+        <form method="POST">
+            <input type="text" placeholder="Email" name="email">
             
             <div class="password-container">
-                <input type="password" placeholder="Password">
+                <input type="password" placeholder="Password" name="password">
                 <a href="#" class="forgot-link">FORGOT?</a>
             </div>
             
-            <button type="button" class="login-button">LOG IN</button>
+            <button type="submit" class="login-button">LOG IN</button>
         </form>
         
         <div class="divider">
