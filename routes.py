@@ -5,7 +5,7 @@ auth_bp = Blueprint('auth', __name__)  # Define the Blueprint
 
 @auth_bp.route('/')
 def home():
-    return render_template('landing.html', user=session.get('user'))
+    return render_template('landingpage.html', user=session.get('user'))
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():

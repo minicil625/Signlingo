@@ -29,6 +29,23 @@ body {
     border: none;
 }
 
+.sign-up
+{
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #ffb91f;
+    color: #000;
+    padding: 10px 30px;
+    border-radius: 20px;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 0 0 2px #FFF08C;
+}
+
+
 h1 {
     font-size: 24px;
     margin-bottom: 30px;

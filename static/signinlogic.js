@@ -3,10 +3,6 @@
             alert('Close button clicked');
         });
         
-        document.querySelector('.login-button').addEventListener('click', function() {
-            alert('Login button clicked');
-        });
-        
         document.querySelector('.create-button').addEventListener('click', function() {
             const age = document.getElementById('age').value;
             const name = document.getElementById('name').value;
