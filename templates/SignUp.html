@@ -7,6 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/7fb2b68ee1.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="../static/signstyle.css">
 </head>
 <body>
@@ -15,7 +16,10 @@
     
     <form class="container" id="signup-form" method="POST">
         {% if error %}
-        <p style="color: red;">{{ error }}</p>
+        <div class="error-message">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+            <p class="error">{{ error }}</p>
+        </div>
         {% endif %}
         <h1>Create your profile</h1>
     
