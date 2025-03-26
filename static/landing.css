@@ -724,9 +724,9 @@ h1 {
 }
 
 .footer .text-wrapper-32 {
-  top: 166px;
   position: absolute;
   height: 23px;
+  top: 166px;
   left: 1px;
   font-family: "Inter-Bold", Helvetica;
   font-weight: 700;
