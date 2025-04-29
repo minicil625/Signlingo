@@ -1,7 +1,3 @@
-document.querySelector('.close-button').addEventListener('click', function() {
-    alert('Close button clicked');
-});
-
 document.querySelector('.login-button').addEventListener('click', function() {
     const email = document.querySelector('input[type="text"]').value;
     const password = document.querySelector('input[type="password"]').value;
