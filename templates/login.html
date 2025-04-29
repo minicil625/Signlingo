@@ -18,8 +18,15 @@
         <h1>Log in</h1>
         
         <form method="POST">
-            <input type="text" placeholder="Email" name="email">
             
+            {% if error %}
+            <div class="error-message">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p class="error">{{ error }}</p>
+            </div>
+            {% endif %}
+            
+            <input type="text" placeholder="Email" name="email">
             <div class="password-container">
                 <input type="password" placeholder="Password" name="password">
                 <a href="#" class="forgot-link">FORGOT?</a>

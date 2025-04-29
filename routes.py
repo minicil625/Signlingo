@@ -39,7 +39,8 @@ def login():
             session['user'] = email
             return render_template("Dashboard.html") 
         else:
-            return "Invalid credentials."
+            error_message =  "Invalid credentials."
+            return render_template('login.html', error=error_message)
 
     return render_template('login.html')
 
