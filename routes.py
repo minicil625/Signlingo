@@ -17,13 +17,13 @@ def register():
         password = request.form.get('password')
 
         if User.query.filter_by(email=email).first():
-            error_message = "Email already exists. Please use a different one or login."
+            error_message = "Email already exists."
             return render_template('SignUp.html', error=error_message)
 
         new_user = User(age=age, name=name, email=email, password=password)
         db.session.add(new_user)
         db.session.commit()
-        return render_template('login.html')
+        return redirect(url_for('auth.login'))
 
     return render_template('SignUp.html')
 
