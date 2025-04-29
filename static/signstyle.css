@@ -1,21 +1,23 @@
 /* signstyle.css */
 
 :root {
-  --primary-color: #1877f2; /* Blue */
-  --secondary-color: #7f56d9; /* Purple */
-  --light-bg: #f0f4ff;
-  --text-main: #0a2540;
+  --accent-light: #0cead9;
+  --primary: #3acadf;
+  --secondary: #729efd;
+  --tertiary: #8a64d6;
+  --dark: #5c3a92;
+  --white: #ffffff;
+  --bg-light: #f0f4ff;
+  --text-main: #2a2a2a;
   --text-muted: #6b7280;
-  --input-bg: #f9fbff;
-  --border-color: #dbeafe;
-  --hover-bg: #eff6ff;
+  --border: #dbeafe;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background: var(--light-bg);
+  background: var(--bg-light);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -24,7 +26,7 @@ body {
 }
 
 .container {
-  background: #ffffff;
+  background: var(--white);
   padding: 2.5rem 2rem;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
@@ -36,7 +38,7 @@ h1 {
   margin-bottom: 1.5rem;
   font-weight: 700;
   font-size: 2rem;
-  color: var(--text-main);
+  color: var(--dark);
 }
 
 input[type="text"],
@@ -46,10 +48,10 @@ input[type="number"] {
   width: 100%;
   padding: 0.75rem;
   margin-bottom: 1rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 12px;
   font-size: 1rem;
-  background: var(--input-bg);
+  background: var(--white);
   color: var(--text-main);
 }
 
@@ -60,8 +62,8 @@ input::placeholder {
 .create-account-btn {
   width: 100%;
   padding: 0.75rem;
-  background-color: var(--primary-color);
-  color: white;
+  background-color: var(--primary);
+  color: var(--white);
   font-weight: 600;
   border: none;
   border-radius: 12px;
@@ -71,7 +73,7 @@ input::placeholder {
 }
 
 .create-account-btn:hover {
-  background-color: #125fd4;
+  background-color: var(--accent-light);
 }
 
 .divider {
@@ -84,7 +86,7 @@ input::placeholder {
 .divider hr {
   flex: 1;
   border: none;
-  border-top: 1px solid var(--border-color);
+  border-top: 1px solid var(--border);
 }
 
 .divider span {
@@ -105,9 +107,9 @@ input::placeholder {
   justify-content: center;
   gap: 0.5rem;
   padding: 0.65rem;
-  border: 1px solid var(--border-color);
+  border: 1px solid var(--border);
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--white);
   cursor: pointer;
   font-weight: 500;
   color: var(--text-main);
@@ -115,7 +117,7 @@ input::placeholder {
 }
 
 .social-btn:hover {
-  background: var(--hover-bg);
+  background: var(--bg-light);
 }
 
 .terms-text,
@@ -128,7 +130,7 @@ input::placeholder {
 
 .terms-text a,
 .captcha-text a {
-  color: var(--secondary-color);
+  color: var(--secondary);
   text-decoration: none;
   font-weight: 500;
 }
@@ -158,15 +160,15 @@ input::placeholder {
   background: transparent;
   font-weight: 600;
   cursor: pointer;
-  color: var(--primary-color);
 }
 
 .close-button {
   left: 1.5rem;
   font-size: 1.5rem;
+  color: var(--primary);
 }
 
 .login-button {
   right: 1.5rem;
-  color: var(--secondary-color);
+  color: var(--tertiary);
 }
