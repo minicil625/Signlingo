@@ -41,7 +41,6 @@ def login():
         else:
             error_message =  "Invalid credentials."
             return render_template('login.html', error=error_message)
-
     return render_template('login.html')
 
 @auth_bp.route('/logout')
