@@ -1,23 +1,21 @@
-/* signstyle.css */
-
 :root {
-  --accent-light: #0cead9;
-  --primary: #3acadf;
-  --secondary: #729efd;
-  --tertiary: #8a64d6;
-  --dark: #5c3a92;
+  --color-primary:   #2196F3;   /* Blue - trustworthy, action */
+  --color-secondary: #4CAF50;   /* Green - success, growth */
+  --color-tertiary:  #AB47BC;   /* Purple - creativity */
+  --color-dark:      #4A148C;   /* Deep purple - contrast */
+  --color-bg-light:  #F5F5F5;   /* Neutral background */
+
   --white: #ffffff;
-  --bg-light: #f0f4ff;
-  --text-main: #2a2a2a;
-  --text-muted: #6b7280;
-  --border: #dbeafe;
+  --text-main: #212121;
+  --text-muted: #616161;
+  --border: #e0e0e0;
 }
 
 body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', sans-serif;
-  background: var(--bg-light);
+  background: var(--color-bg-light);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -29,7 +27,7 @@ body {
   background: var(--white);
   padding: 2.5rem 2rem;
   border-radius: 16px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   width: 380px;
   text-align: center;
 }
@@ -38,7 +36,7 @@ h1 {
   margin-bottom: 1.5rem;
   font-weight: 700;
   font-size: 2rem;
-  color: var(--dark);
+  color: var(--color-dark);
 }
 
 input[type="text"],
@@ -56,13 +54,13 @@ input[type="number"] {
 }
 
 input::placeholder {
-  color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .create-account-btn {
   width: 100%;
   padding: 0.75rem;
-  background-color: var(--primary);
+  background-color: var(--color-primary);
   color: var(--white);
   font-weight: 600;
   border: none;
@@ -73,7 +71,7 @@ input::placeholder {
 }
 
 .create-account-btn:hover {
-  background-color: var(--accent-light);
+  background-color: #64B5F6; /* Blue 300 */
 }
 
 .divider {
@@ -117,7 +115,7 @@ input::placeholder {
 }
 
 .social-btn:hover {
-  background: var(--bg-light);
+  background: #f0f0f0;
 }
 
 .terms-text,
@@ -130,14 +128,14 @@ input::placeholder {
 
 .terms-text a,
 .captcha-text a {
-  color: var(--secondary);
+  color: var(--color-secondary); /* Green for links */
   text-decoration: none;
   font-weight: 500;
 }
 
 .error-message {
-  background-color: #ffe4e6;
-  color: #b91c1c;
+  background-color: #fbe9e7;
+  color: #d84315;
   padding: 0.75rem;
   border-radius: 12px;
   margin-bottom: 1rem;
@@ -165,10 +163,10 @@ input::placeholder {
 .close-button {
   left: 1.5rem;
   font-size: 1.5rem;
-  color: var(--primary);
+  color: var(--color-primary);
 }
 
 .login-button {
   right: 1.5rem;
-  color: var(--tertiary);
+  color: var(--color-tertiary); /* Purple for alternate action */
 }

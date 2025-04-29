@@ -1,207 +1,184 @@
-/* loginstyle.css */
-
 :root {
-    --accent-light: #0cead9;
-    --primary: #3acadf;
-    --secondary: #729efd;
-    --tertiary: #8a64d6;
-    --dark: #5c3a92;
-    --white: #ffffff;
-    --bg-light: #f0f4ff;
-    --text-main: #2a2a2a;
-    --text-muted: #6b7280;
-    --border: #dbeafe;
+  /* Triadic brand palette */
+  --color-primary: #2196F3;   /* Blue - calm, trustworthy */
+  --color-secondary: #4CAF50; /* Green - growth, success */
+  --color-tertiary: #AB47BC;  /* Purple - creativity */
+  --color-dark: #4A148C;      /* Deep purple for text contrast */
+  --color-bg-light: #F5F5F5;  /* Soft background for clarity */
+
+  /* Typography */
+  --text-main: #212121;
+  --text-muted: #616161;
+  --white: #ffffff;
+  --border: #e0e0e0;
 }
 
 body {
-    margin: 0;
-    padding: 0;
-    font-family: 'Inter', sans-serif;
-    background: var(--bg-light);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    position: relative;
+  margin: 0;
+  padding: 0;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--color-bg-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
 }
 
 .login-container {
-    background: var(--white);
-    padding: 2.5rem 2rem;
-    border-radius: 16px;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-    width: 380px;
-    text-align: center;
-}
-
-.error-message {
-    position: absolute;
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: white;
-    width: 80%;
-    max-width: 500px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    border-radius: 20px;
-    padding: 15px;
-    text-align: center;
-    z-index: 10;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-}
-
-.fa-triangle-exclamation {
-    color: red;
-    font-size: 25px;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    flex-shrink: 0;
-
-}
-
-.error {
-    color: red;
-    font-size: 15px;
-    font-weight: bold;
+  background: var(--white);
+  padding: 2.5rem 2rem;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  width: 360px;
+  text-align: center;
 }
 
 h1 {
-    margin-bottom: 1.5rem;
-    font-weight: 700;
-    font-size: 2rem;
-    color: var(--dark);
+  margin-bottom: 1.5rem;
+  font-weight: 700;
+  font-size: 2rem;
+  color: var(--color-dark);
 }
 
 input[type="text"],
 input[type="password"] {
-    width: 100%;
-    padding: 0.75rem;
-    margin-bottom: 1.2rem;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    font-size: 1rem;
-    background: var(--white);
-    color: var(--text-main);
+  width: 100%;
+  padding: 0.75rem;
+  margin-bottom: 1.2rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  font-size: 1rem;
+  background: var(--white);
+  color: var(--text-main);
 }
 
 input::placeholder {
-    color: #94a3b8;
+  color: var(--text-muted);
 }
 
 .password-container {
-    position: relative;
+  position: relative;
 }
 
 .forgot-link {
-    position: absolute;
-    right: 0.75rem;
-    top: 50%;
-    transform: translateY(-50%);
-    font-size: 0.8rem;
-    text-decoration: none;
-    color: var(--tertiary);
-    font-weight: 500;
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 0.8rem;
+  text-decoration: none;
+  color: var(--color-tertiary);
+  font-weight: 500;
 }
 
 .login-button {
-    width: 100%;
-    padding: 0.75rem;
-    background-color: var(--primary);
-    color: var(--white);
-    font-weight: 600;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    transition: background-color 0.3s;
+  width: 100%;
+  padding: 0.75rem;
+  background-color: var(--color-primary);
+  color: var(--white);
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
 
 .login-button:hover {
-    background-color: var(--accent-light);
+  background-color: #64B5F6; /* Blue 300 for hover */
 }
 
 .divider {
-    display: flex;
-    align-items: center;
-    margin: 1.5rem 0;
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
 }
 
 .divider::before,
 .divider::after {
-    content: "";
-    flex: 1;
-    height: 1px;
-    background: var(--border);
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--border);
 }
 
 .divider-text {
-    margin: 0 0.75rem;
-    color: var(--text-muted);
-    font-size: 0.85rem;
+  margin: 0 0.75rem;
+  color: var(--text-muted);
+  font-size: 0.85rem;
 }
 
 .social-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 0.75rem;
-    margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .social-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
-    padding: 0.65rem;
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    background: var(--white);
-    cursor: pointer;
-    font-weight: 500;
-    color: var(--text-main);
-    transition: background 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.65rem;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--white);
+  cursor: pointer;
+  font-weight: 500;
+  color: var(--text-main);
+  transition: background-color 0.3s;
 }
 
 .social-button:hover {
-    background: var(--bg-light);
+  background: #f0f0f0;
 }
 
 .terms-text,
 .recaptcha-text {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    margin-top: 1rem;
-    line-height: 1.4;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+  line-height: 1.4;
 }
 
 .terms-text a,
 .recaptcha-text a {
-    color: var(--secondary);
-    text-decoration: none;
-    font-weight: 500;
+  color: var(--color-secondary);
+  text-decoration: none;
+  font-weight: 500;
 }
 
 .close-button,
 .sign-up {
-    position: absolute;
-    top: 1.5rem;
-    font-size: 1rem;
-    padding: 0.5rem 1rem;
-    border: none;
-    background: transparent;
-    font-weight: 600;
-    cursor: pointer;
+  position: absolute;
+  top: 1.5rem;
+  font-size: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  background: transparent;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .close-button {
-    left: 1.5rem;
-    font-size: 1.5rem;
-    color: var(--primary);
+  left: 1.5rem;
+  font-size: 1.5rem;
+  color: var(--color-primary);
 }
 
 .sign-up {
-    right: 1.5rem;
-    color: var(--tertiary);
+  right: 1.5rem;
+  color: var(--color-tertiary);
+}
+
+.error-message {
+  background-color: #fbe9e7;
+  color: #d84315;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
