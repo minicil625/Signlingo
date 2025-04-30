@@ -1,11 +1,14 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from models import db, User  # Import the database and User model
+import random,json
 
 auth_bp = Blueprint('auth', __name__)  # Define the Blueprint
 
 @auth_bp.route('/')
 def home():
     return render_template('landingpage.html', user=session.get('user'))
+
+# ----------------------------------- AUTHENTICATION ------------------------------------------------
 
 @auth_bp.route('/register', methods=['GET', 'POST'])
 def register():
@@ -47,3 +50,24 @@ def login():
 def logout():
     session.pop('user', None)
     return redirect(url_for('auth.home'))
+
+# ----------------------------------- GAME PAGE ------------------------------------------------
+
+with open('questions.json') as f:
+    questions = json.load(f)
+
+@auth_bp.route('/gamepage')
+def gamepage():
+    return render_template("gamepage.html", user=session.get('user'))
+
+@auth_bp.route('/get-question')
+def get_question():
+    question = random.choice(questions)
+    return jsonify(question)
+
+@auth_bp.route('/check-answer', methods=['POST'])
+def check_answer():
+    data = request.json
+    selected = data.get('selected')
+    correct = data.get('correct')
+    return jsonify({"result": selected == correct})
