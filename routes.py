@@ -40,11 +40,15 @@ def login():
         user = User.query.filter_by(email=email, password=password).first()
         if user:
             session['user'] = email
-            return render_template("Dashboard.html") 
+            return redirect(url_for('auth.dashboard'))
         else:
             error_message =  "Invalid credentials."
             return render_template('login.html', error=error_message)
     return render_template('login.html')
+
+@auth_bp.route('/dashboard', methods=['GET', 'POST'])
+def dashboard():
+    return render_template('Dashboard.html')
 
 @auth_bp.route('/logout')
 def logout():
