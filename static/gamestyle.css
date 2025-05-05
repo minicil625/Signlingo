@@ -1,148 +1,164 @@
-/* gamestyle.css */
 :root {
-    --primary: #1877f2;
-    --secondary: #7f56d9;
-    --bg-light: #f3f6fc;
+    --primary: #4153ef;
+    --secondary: #8e44ef;
+    --correct: #2ecc71;
+    --incorrect: #e74c3c;
+    --neutral: #95a5a6;
+    --bg-light: #f8fafc;
     --white: #ffffff;
-    --text-main: #0a2540;
-    --border: #e2e8f0;
-    --card-shadow: rgba(0, 0, 0, 0.1);
-    --red: #e41f4f;
-    --blue: #00cbbf;
-    --green: #7ac74f;
-    --yellow: #ffe358;
-  }
-  
-  /* Global resets & typography */
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  html, body { height: 100%; width: 100%; }
-  body {
-    font-family: 'Poppins', sans-serif;
-    background-color: var(--bg-light);
-    color: var(--text-main);
-  }
-  
-  /* Full-screen flex container */
-  #quiz-container {
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    width: 100vw;
-  }
-  
-  /* Header with gradient & progress */
-  .quiz-header {
+}
+
+body {
     background: linear-gradient(135deg, var(--primary), var(--secondary));
+    min-height: 100vh;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+.sidebar {
+    background: rgba(255, 255, 255, 0.95);
+    width: 300px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 2rem;
+    box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
+    overflow-y: auto;
+}
+
+.lesson-item {
     padding: 1rem;
-    text-align: center;
-    color: var(--white);
-  }
-  .quiz-header h1 {
-    font-size: 1.75rem;
-    font-weight: 600;
-  }
-  #progress {
-    background: rgba(255,255,255,0.25);
-    border-radius: 0.5rem;
-    height: 8px;
-    overflow: hidden;
-    margin-top: 0.75rem;
-  }
-  #progress-bar {
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    background: var(--bg-light);
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.lesson-item:hover {
+    transform: translateX(5px);
+}
+
+.lesson-item.completed {
+    background: rgba(46, 204, 113, 0.1);
+    border-left: 4px solid var(--correct);
+}
+
+.lesson-item.current {
+    background: rgba(65, 83, 239, 0.1);
+    border-left: 4px solid var(--primary);
+}
+
+.main-content {
+    margin-left: 300px;
+    padding: 2rem;
+    min-height: 100vh;
+}
+
+.quiz-card {
     background: var(--white);
-    height: 100%;
-    width: 0%;
-    transition: width 0.4s ease;
-  }
-  
-  /* Main area: centered, responsive */
-  main {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 1rem;
-  }
-  
-  .question-area {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 1.2rem;
-  }
-  
-  /* Image card with fade-in */
-  .image-wrapper {
-    width: 70%; max-width: 320px;
-    animation: fadeIn 0.5s ease;
-  }
-  @keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.95); }
-    to { opacity: 1; transform: scale(1); }
-  }
-  .sign-image {
-    width: 100%;
-    border-radius: 0.75rem;
-    border: 2px solid var(--border);
-    box-shadow: 0 4px 10px var(--card-shadow);
-  }
-  
-  /* Question text */
-  .question-text {
+    border-radius: 20px;
+    padding: 2rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    margin: 2rem auto;
+}
+
+.world-icon {
+    width: 150px;
+    height: 150px;
+    margin: 2rem auto;
+    display: block;
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-20px); }
+}
+
+.question-text {
     font-size: 1.5rem;
     font-weight: 600;
+    color: #2c3e50;
     text-align: center;
-  }
-  
-  /* 2×2 responsive choice grid */
-  .choices-grid {
+    margin-bottom: 2rem;
+}
+
+.options-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(140px,1fr));
-    gap: 0.8rem;
-    width: 100%; max-width: 500px;
-  }
-  .choices-grid button {
-    border: none;
-    border-radius: 0.75rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.option-button {
     padding: 1rem;
-    font-size: 1rem;
+    border: 2px solid #e9ecef;
+    border-radius: 12px;
+    background: var(--white);
+    color: #2c3e50;
     font-weight: 500;
-    color: var(--white);
+    transition: all 0.3s ease;
     cursor: pointer;
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
-  }
-  .choices-grid button:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 15px var(--card-shadow);
-  }
-  .choices-grid button:focus {
-    outline: 3px solid var(--secondary);
-  }
-  .choices-grid button:nth-child(1) { background: var(--red); }
-  .choices-grid button:nth-child(2) { background: var(--blue); }
-  .choices-grid button:nth-child(3) { background: var(--green); }
-  .choices-grid button:nth-child(4) { background: var(--yellow); color: var(--text-main); }
-  
-  /* Feedback message */
-  .feedback {
     text-align: center;
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--secondary);
-    min-height: 2rem;
-  }
-  
-  /* Next button with micro-interaction */
-  #next-btn {
-    align-self: center;
-    background: linear-gradient(135deg, var(--secondary), var(--primary));
+}
+
+.option-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary);
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background: #e9ecef;
+    border-radius: 3px;
+    margin-bottom: 2rem;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
+    border-radius: 3px;
+    width: 45%;
+    transition: width 0.3s ease;
+}
+
+.next-button {
+    background: linear-gradient(90deg, var(--primary), var(--secondary));
     color: var(--white);
+    padding: 1rem 2rem;
     border: none;
-    border-radius: 2rem;
-    padding: 0.75rem 2rem;
-    font-size: 1rem;
-    transition: transform 0.2s ease;
-  }
-  #next-btn:hover { transform: scale(1.05); }
+    border-radius: 12px;
+    font-weight: 600;
+    float: right;
+    transition: all 0.3s ease;
+}
+
+.next-button:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 2rem;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-number {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: var(--primary);
+}
+
+.stat-label {
+    color: var(--neutral);
+    font-size: 0.9rem;
+}

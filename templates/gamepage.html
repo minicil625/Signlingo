@@ -1,46 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>SignQuest</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Google Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/static/gamestyle.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignQuest - Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/gamestyle.css">
 </head>
 <body>
-  <div id="quiz-container" role="main">
-    <header class="quiz-header">
-      <h1>SignQuest</h1>
-      <div id="progress" aria-label="Progress">
-        <div id="progress-bar"></div>
-      </div>
-    </header>
-
-    <main>
-      <section class="question-area">
-        <div class="image-wrapper">
-          <!-- Fade-in animation via CSS -->
-          <img id="sign-image" src="/static/placeholder.png" alt="Sign language gesture" class="sign-image" aria-live="polite">
+    <div class="sidebar">
+        <h4 class="mb-4">Geography Module</h4>
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">7/10</div>
+                <div class="stat-label">Progress</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">85%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
         </div>
 
-        <div id="question" class="question-text" aria-live="assertive">
-          Identify the sign shown above
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill"></div>
         </div>
 
-        <div id="choices" class="choices-grid" role="list">
-          <!-- Buttons will be injected here -->
+        <div class="lesson-item completed">
+            <i class="fas fa-check-circle me-2 text-success"></i>
+            European Countries
         </div>
-      </section>
+        <div class="lesson-item completed">
+            <i class="fas fa-check-circle me-2 text-success"></i>
+            European Capitals
+        </div>
+        <div class="lesson-item current">
+            <i class="fas fa-play-circle me-2 text-primary"></i>
+            Major Cities
+        </div>
+        <div class="lesson-item">
+            <i class="fas fa-circle me-2 text-secondary"></i>
+            Population Statistics
+        </div>
+        <div class="lesson-item">
+            <i class="fas fa-circle me-2 text-secondary"></i>
+            Geographic Features
+        </div>
+        <div class="lesson-item">
+            <i class="fas fa-circle me-2 text-secondary"></i>
+            Cultural Landmarks
+        </div>
+    </div>
 
-      <div id="feedback" class="feedback" aria-live="assertive"></div>
+    <div class="main-content">
+        <div class="quiz-card">
+            <!-- Question image -->
+            <img id="sign-image" src="/static/placeholder.png" alt="Sign Image" class="world-icon">
 
-      <button id="next-btn" onclick="loadQuestion()" aria-label="Next question">
-        Next →
-      </button>
-    </main>
-  </div>
+            <!-- Question text -->
+            <div id="question" class="question-text">
+                Loading question...
+            </div>
 
-  <script src="/static/gamelogic.js"></script>
+            <!-- Answer choices -->
+            <div id="choices" class="options-grid">
+                <!-- Buttons will be inserted dynamically here -->
+            </div>
+
+            <!-- Feedback -->
+            <div id="feedback" class="text-center fw-bold mb-3" style="font-size: 1.2rem;"></div>
+
+            <!-- No more "Next" button, loading is automatic -->
+
+        </div>
+    </div>
+
+    <script src="static/gamelogic.js"></script>
 </body>
 </html>

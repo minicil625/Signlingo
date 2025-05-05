@@ -6,7 +6,7 @@ async function loadQuestion() {
   if (questionsAsked >= TOTAL_QUESTIONS) {
     document.getElementById('question').innerText = '🎉 Quiz Complete!';
     document.getElementById('choices').innerHTML = '';
-    document.getElementById('sign-image').src = '/static/placeholder.png'; // Reset image
+    document.getElementById('sign-image').src = '/static/placeholder.png';
     return;
   }
 
@@ -15,40 +15,52 @@ async function loadQuestion() {
 
   correctAnswer = data.answer;
 
-  // Set question text
   document.getElementById('question').innerText = data.question;
+  document.getElementById('sign-image').src = data.image || '/static/placeholder.png';
 
-  // Set sign image (new!)
-  if (data.image) {
-    document.getElementById('sign-image').src = data.image;
-  } else {
-    document.getElementById('sign-image').src = '/static/placeholder.png';
-  }
-
-  // Set answer choices
   const choicesDiv = document.getElementById('choices');
   choicesDiv.innerHTML = '';
   data.choices.forEach(choice => {
-    const btn = document.createElement('button');
+    const btn = document.createElement('div');
+    btn.className = 'option-button';
     btn.innerText = choice;
-    btn.onclick = () => checkAnswer(choice);
+    btn.onclick = () => checkAnswer(choice, btn);
     choicesDiv.appendChild(btn);
   });
 
-  // Reset feedback and update progress
   document.getElementById('feedback').innerText = '';
   questionsAsked++;
   updateProgress();
 }
 
-async function checkAnswer(selected) {
+async function checkAnswer(selected, buttonElement) {
   const res = await fetch('/check-answer', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ selected, correct: correctAnswer })
   });
   const result = await res.json();
+
   document.getElementById('feedback').innerText = result.result ? '✅ Correct!' : `❌ Wrong!`;
+
+  // Disable all options
+  const options = document.querySelectorAll('.option-button');
+  options.forEach(opt => {
+    opt.style.pointerEvents = 'none';
+    opt.style.opacity = '0.6';
+  });
+
+  // Highlight correct/incorrect
+  if (result.result) {
+    buttonElement.style.background = 'var(--correct)';
+    buttonElement.style.color = '#fff';
+  } else {
+    buttonElement.style.background = 'var(--incorrect)';
+    buttonElement.style.color = '#fff';
+  }
+
+  // Load next question after delay
+  setTimeout(loadQuestion, 1500);
 }
 
 function updateProgress() {
