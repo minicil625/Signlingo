@@ -3,13 +3,14 @@
         "id": 1,
         "question": "What is the capital of France?",
         "choices": ["Paris", "London", "Rome", "Berlin"],
-        "answer": "Paris"
+        "answer": "Paris",
+        "image": "static/Assets/earth.png"
     },
     {
         "id": 2,
         "question": "Which planet is known as the Red Planet?",
         "choices": ["Earth", "Mars", "Jupiter", "Saturn"],
-        "answer": "Mars"
+        "answer": "Mars",
+        "image": "static/Assets/earth.png"
     }
   ]
-  

@@ -1,17 +1,46 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Quiz Game</title>
-  <link rel="stylesheet" href="../static/gamestyle.css">
-  <script src="../static/gamelogic.js"></script>
+  <meta charset="UTF-8">
+  <title>SignQuest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/gamestyle.css">
 </head>
 <body>
-  <div id="quiz-container">
-    <h2 id="id">Loading...</h2>
-    <h2 id="question">Loading...</h2>
-    <div id="choices"></div>
-    <p id="feedback"></p>
-    <button onclick="loadQuestion()">Next Question</button>
+  <div id="quiz-container" role="main">
+    <header class="quiz-header">
+      <h1>SignQuest</h1>
+      <div id="progress" aria-label="Progress">
+        <div id="progress-bar"></div>
+      </div>
+    </header>
+
+    <main>
+      <section class="question-area">
+        <div class="image-wrapper">
+          <!-- Fade-in animation via CSS -->
+          <img id="sign-image" src="/static/placeholder.png" alt="Sign language gesture" class="sign-image" aria-live="polite">
+        </div>
+
+        <div id="question" class="question-text" aria-live="assertive">
+          Identify the sign shown above
+        </div>
+
+        <div id="choices" class="choices-grid" role="list">
+          <!-- Buttons will be injected here -->
+        </div>
+      </section>
+
+      <div id="feedback" class="feedback" aria-live="assertive"></div>
+
+      <button id="next-btn" onclick="loadQuestion()" aria-label="Next question">
+        Next →
+      </button>
+    </main>
   </div>
+
+  <script src="/static/gamelogic.js"></script>
 </body>
 </html>
