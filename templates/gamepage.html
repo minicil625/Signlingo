@@ -53,28 +53,34 @@
         </div>
     </div>
 
-    <div class="main-content">
-        <div class="quiz-card">
-            <!-- Question image -->
-            <img id="sign-image" src="/static/placeholder.png" alt="Sign Image" class="world-icon">
-
-            <!-- Question text -->
-            <div id="question" class="question-text">
-                Loading question...
+    <div class="main_wrapper">
+        <div class="main-content">
+            <div class="quiz-card">
+                <div class="progress-bar-container internal-progress">
+                    <div class="progress-bar-fill" id="progress-bar"></div>
+                </div>
+                <!-- Question image -->
+                <img id="sign-image" src="/static/placeholder.png" alt="Sign Image" class="world-icon">
+        
+                <!-- Question text -->
+                <div id="question" class="question-text">
+                    Loading question...
+                </div>
+    
+                <!-- Answer choices -->
+                <div id="choices" class="options-grid">
+                    <!-- Buttons will be inserted dynamically here -->
+                </div>
+    
+                <!-- Feedback -->
+                <div id="feedback" class="text-center fw-bold mb-3" style="font-size: 1.2rem;"></div>
+    
+                <!-- No more "Next" button, loading is automatic -->
+    
             </div>
-
-            <!-- Answer choices -->
-            <div id="choices" class="options-grid">
-                <!-- Buttons will be inserted dynamically here -->
-            </div>
-
-            <!-- Feedback -->
-            <div id="feedback" class="text-center fw-bold mb-3" style="font-size: 1.2rem;"></div>
-
-            <!-- No more "Next" button, loading is automatic -->
-
         </div>
     </div>
+    
 
     <script src="static/gamelogic.js"></script>
 </body>
