@@ -40,6 +40,7 @@ def login():
         user = User.query.filter_by(email=email, password=password).first()
         if user:
             session['user'] = email
+            session['user_id'] = user.id 
             return redirect(url_for('auth.dashboard'))
         else:
             error_message =  "Invalid credentials."
@@ -48,7 +49,23 @@ def login():
 
 @auth_bp.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
-    return render_template('Dashboard.html')
+    user_id = session.get('user_id')
+    print(user_id)
+    
+    if not user_id:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.get(user_id)
+    full_name = user.name
+
+    name_parts = full_name.split()
+    first_name = name_parts[0]
+    initials = ''.join([part[0] for part in name_parts[:2]]).upper()  # handles single names too
+
+    return render_template("Dashboard.html", 
+                           full_name=full_name, 
+                           first_name=first_name, 
+                           initials=initials)
 
 @auth_bp.route('/logout')
 def logout():
