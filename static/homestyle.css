@@ -79,7 +79,7 @@ body {
     position: absolute;
     right: 20px;
     bottom: 20px;
-    width: 140px;
+    width: 80px;
     opacity: 0.9;
     animation: float 3s ease-in-out infinite;
 }
