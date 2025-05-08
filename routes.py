@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from models import db, User  # Import the database and User model
 import random,json
+from tertiary import get_initials
 
 auth_bp = Blueprint('auth', __name__)  # Define the Blueprint
 
@@ -58,9 +59,7 @@ def dashboard():
     user = User.query.get(user_id)
     full_name = user.name
 
-    name_parts = full_name.split()
-    first_name = name_parts[0]
-    initials = ''.join([part[0] for part in name_parts[:2]]).upper()  # handles single names too
+    first_name,initials = get_initials(full_name)
 
     return render_template("Dashboard.html", 
                            full_name=full_name, 
