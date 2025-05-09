@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignQuest - Quiz</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/gamestyle.css">
+    <link rel="stylesheet" href="static/ml_game.css">
+</head>
+<body>
+    <div class="sidebar">
+        <h4 class="mb-4">Geography Module</h4>
+        
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">7/10</div>
+                <div class="stat-label">Progress</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">85%</div>
+                <div class="stat-label">Accuracy</div>
+            </div>
+        </div>
+
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill"></div>
+        </div>
+
+        <div class="lesson-item completed">
+            <i class="fas fa-check-circle me-2 text-success"></i>
+            European Countries
+        </div>
+        <div class="lesson-item completed">
+            <i class="fas fa-check-circle me-2 text-success"></i>
+            European Capitals
+        </div>
+        <div class="lesson-item current">
+            <i class="fas fa-play-circle me-2 text-primary"></i>
+            Major Cities
+        </div>
+        <div class="lesson-item">
+            <i class="fas fa-circle me-2 text-secondary"></i>
+            Population Statistics
+        </div>
+        <div class="lesson-item">
+            <i class="fas fa-circle me-2 text-secondary"></i>
+            Geographic Features
+        </div>
+        <div class="lesson-item">
+            <i class="fas fa-circle me-2 text-secondary"></i>
+            Cultural Landmarks
+        </div>
+    </div>
+
+    <div class="main_wrapper">
+        <div class="main-content">
+            <div class="quiz-card">
+                <div class="progress-bar-container internal-progress">
+                    <div class="progress-bar-fill" id="progress-bar"></div>
+                </div>
+                <!-- Question image -->
+                <video id="webcam" autoplay playsinline width="320" height="240"></video>
+                <canvas id="canvas" width="224" height="224" style="display:none;"></canvas>
+        
+                <!-- Question text -->
+                <div id="question" class="question-text">
+                    Loading question...
+                </div>
+    
+                <!-- Answer choices -->
+                <div id="choices" class="options-grid">
+                    <!-- Buttons will be inserted dynamically here -->
+                </div>
+    
+                <!-- Feedback -->
+                <div id="feedback" class="text-center fw-bold mb-3" style="font-size: 1.2rem;"></div>
+    
+                <!-- No more "Next" button, loading is automatic -->
+    
+            </div>
+        </div>
+    </div>
+    
+
+    <script src="static/gamelogic.js"></script>
+    <script src="/static/ml_logic.js"></script>
+</body>
+</html>

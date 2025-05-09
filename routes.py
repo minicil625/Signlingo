@@ -66,6 +66,11 @@ def dashboard():
                            first_name=first_name, 
                            initials=initials)
 
+@auth_bp.route('/ml_game', methods=['GET', 'POST'])
+def ml_game():
+    return render_template("ML_game.html")
+
+
 @auth_bp.route('/logout')
 def logout():
     session.pop('user', None)
@@ -91,3 +96,48 @@ def check_answer():
     selected = data.get('selected')
     correct = data.get('correct')
     return jsonify({"result": selected == correct})
+
+
+# ----------------------------------- CNN-LSTM MODEL ------------------------------------------------
+# from tensorflow.keras.models import load_model
+# from PIL import Image
+# import numpy as np
+# import io
+# # Load your CNN-LSTM model once at startup
+# model = load_model('models/your_model.h5')
+
+# # Define your class labels in order
+# classes = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
+
+# def preprocess_image(image: Image.Image, target_size=(224,224)) -> np.ndarray:
+#     # Resize & normalize
+#     img = image.resize(target_size)
+#     arr = np.array(img) / 255.0
+#     # Expand dims: (1, H, W, C)
+#     return np.expand_dims(arr, axis=0)
+
+# def decode_prediction(pred: np.ndarray) -> str:
+#     idx = np.argmax(pred, axis=1)[0]
+#     return classes[idx]
+
+# @auth_bp.route('/capture')
+# def capture_page():
+#     return render_template('pose_capture.html')
+
+# @auth_bp.route('/predict', methods=['POST'])
+# def predict():
+#     # Receive image blob
+#     file = request.files.get('image')
+#     if not file:
+#         return jsonify({'error': 'No image provided'}), 400
+
+#     # Load into PIL
+#     image = Image.open(io.BytesIO(file.read())).convert('RGB')
+#     # Preprocess for model
+#     input_tensor = preprocess_image(image)
+
+#     # Run model inference
+#     pred = model.predict(input_tensor)
+#     result = decode_prediction(pred)
+
+#     return jsonify({'result': result})
