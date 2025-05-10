@@ -87,10 +87,37 @@ def ml_game():
 def gamepage():
     return render_template("gamepage.html", user=session.get('user'), lessons=lessons)
 
+from flask import session, jsonify
+
 @auth_bp.route('/get-question')
 def get_question():
-    question = random.choice(questions)
-    return jsonify(question)
+    if 'current_index' not in session:
+        session['current_index'] = 0  # Initialize on the first call
+
+    # Get the current question
+    current_index = session['current_index']
+    question = questions[current_index]
+
+    # Randomize the choices
+    choices = question['choices']
+    random_choices = random.sample(choices, len(choices))  # Shuffle choices
+
+    # Prepare the response
+    response = {
+        'question': question['question'],
+        'choices': random_choices,
+        'answer': question['answer'],  # Keep the correct answer
+        'image': question['image']
+    }
+
+    # Increment the index for the next call
+    session['current_index'] += 1
+
+    # Reset if all questions have been shown
+    if session['current_index'] >= len(questions):
+        session['current_index'] = 0  # Reset for the next round
+
+    return jsonify(response)
 
 @auth_bp.route('/check-answer', methods=['POST'])
 def check_answer():
