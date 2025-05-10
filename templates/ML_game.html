@@ -28,30 +28,21 @@
             <div class="progress-bar-fill"></div>
         </div>
 
-        <div class="lesson-item completed">
-            <i class="fas fa-check-circle me-2 text-success"></i>
-            European Countries
-        </div>
-        <div class="lesson-item completed">
-            <i class="fas fa-check-circle me-2 text-success"></i>
-            European Capitals
-        </div>
-        <div class="lesson-item current">
-            <i class="fas fa-play-circle me-2 text-primary"></i>
-            Major Cities
-        </div>
-        <div class="lesson-item">
-            <i class="fas fa-circle me-2 text-secondary"></i>
-            Population Statistics
-        </div>
-        <div class="lesson-item">
-            <i class="fas fa-circle me-2 text-secondary"></i>
-            Geographic Features
-        </div>
-        <div class="lesson-item">
-            <i class="fas fa-circle me-2 text-secondary"></i>
-            Cultural Landmarks
-        </div>
+        <!-- ! Make sure to actually make a javascript for lesson status later on -->
+        {% for lesson in lessons %}
+            <div class="lesson-item {{ lesson.status }}"
+                {% if lesson.url %}onclick="window.location.href='{{ lesson.url }}'"{% endif %}>
+            {% if lesson.status == 'completed' %}
+                <i class="fas fa-check-circle me-2 text-success"></i>
+            {% elif lesson.status == 'current' %}
+                <i class="fas fa-play-circle me-2 text-primary"></i>
+            {% else %}
+                <i class="fas fa-circle me-2 text-secondary"></i>
+            {% endif %}
+            {{ lesson.title }}
+            </div>
+        {% endfor %}
+          
     </div>
 
     <div class="main_wrapper">

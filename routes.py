@@ -66,11 +66,6 @@ def dashboard():
                            first_name=first_name, 
                            initials=initials)
 
-@auth_bp.route('/ml_game', methods=['GET', 'POST'])
-def ml_game():
-    return render_template("ML_game.html")
-
-
 @auth_bp.route('/logout')
 def logout():
     session.pop('user', None)
@@ -81,9 +76,16 @@ def logout():
 with open('questions.json') as f:
     questions = json.load(f)
 
+with open('lessons.json') as f:
+    lessons = json.load(f)
+
+@auth_bp.route('/ml_game', methods=['GET', 'POST'])
+def ml_game():
+    return render_template("ML_game.html", user=session.get('user'), lessons= lessons)
+
 @auth_bp.route('/gamepage')
 def gamepage():
-    return render_template("gamepage.html", user=session.get('user'))
+    return render_template("gamepage.html", user=session.get('user'), lessons=lessons)
 
 @auth_bp.route('/get-question')
 def get_question():
