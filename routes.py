@@ -104,13 +104,6 @@ def get_question():
         'image': question['image']
     }
 
-    # Increment the index for the next call
-    session['current_index'] += 1
-
-    # Reset if all questions have been shown
-    if session['current_index'] >= len(questions):
-        session['current_index'] = 0  # Reset for the next round
-
     return jsonify(response)
 
 @auth_bp.route('/check-answer', methods=['POST'])

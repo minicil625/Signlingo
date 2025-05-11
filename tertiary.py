@@ -15,12 +15,15 @@ with open('questions.json') as f:
     questions = json.load(f)
 
 def get_random_question():
-    if 'questions_asked' not in session:
+    if 'questions_asked' not in session or len(session['questions_asked']) >= 10:
         session['questions_asked'] = []  # Track asked questions
-    id = random.randint(0, 25)
 
+    id = random.randint(0, 25)
     while id in session['questions_asked']:
         id = random.randint(0, 25)
 
-    session['questions_asked'].append(id)
+    questions_asked = session['questions_asked']
+    questions_asked.append(id)
+    session['questions_asked'] = questions_asked 
+
     return questions[id]
