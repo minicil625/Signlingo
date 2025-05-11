@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
 from models import db, User  # Import the database and User model
 import random,json
-from tertiary import get_initials
+from tertiary import get_initials, get_random_question
 
 auth_bp = Blueprint('auth', __name__)  # Define the Blueprint
 
@@ -87,16 +87,10 @@ def ml_game():
 def gamepage():
     return render_template("gamepage.html", user=session.get('user'), lessons=lessons)
 
-from flask import session, jsonify
 
 @auth_bp.route('/get-question')
 def get_question():
-    if 'current_index' not in session:
-        session['current_index'] = 0  # Initialize on the first call
-
-    # Get the current question
-    current_index = session['current_index']
-    question = questions[current_index]
+    question = get_random_question()
 
     # Randomize the choices
     choices = question['choices']
