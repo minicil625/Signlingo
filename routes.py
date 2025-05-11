@@ -16,7 +16,11 @@ def register():
     if request.method == 'POST':
         print(request.form) #! For debugging delete later
         age = request.form.get('age')
+
         name = request.form.get('name')
+        if name == "":
+            name = "Anonymous Wanderer"
+
         email = request.form.get('email')
         password = request.form.get('password')
 
