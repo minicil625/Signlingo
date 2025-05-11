@@ -67,8 +67,8 @@ body {
 
 
 .world-icon {
-    width: 150px;
-    height: 150px;
+    width: 224px;
+    height: 224px;
     margin: 2rem auto;
     display: block;
     animation: float 3s ease-in-out infinite;
