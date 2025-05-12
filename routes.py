@@ -119,45 +119,61 @@ def check_answer():
 
 
 # ----------------------------------- CNN-LSTM MODEL ------------------------------------------------
-# from tensorflow.keras.models import load_model
-# from PIL import Image
-# import numpy as np
-# import io
-# # Load your CNN-LSTM model once at startup
-# model = load_model('models/your_model.h5')
+from tensorflow.keras.models import load_model
+from PIL import Image
+import numpy as np
+import io
+import tensorflow as tf
 
-# # Define your class labels in order
-# classes = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
+# Load your CNN-LSTM model once at startup
+model = load_model('models/Best Model.h5')
 
-# def preprocess_image(image: Image.Image, target_size=(224,224)) -> np.ndarray:
-#     # Resize & normalize
-#     img = image.resize(target_size)
-#     arr = np.array(img) / 255.0
-#     # Expand dims: (1, H, W, C)
-#     return np.expand_dims(arr, axis=0)
+# Define your class labels in order
+classes = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
 
-# def decode_prediction(pred: np.ndarray) -> str:
-#     idx = np.argmax(pred, axis=1)[0]
-#     return classes[idx]
 
-# @auth_bp.route('/capture')
-# def capture_page():
-#     return render_template('pose_capture.html')
+def preprocess_image(image: Image.Image, target_size=(224, 224)) -> np.ndarray:
+    """
+    Prepares an image for LSTM model prediction.
+    Returns array shaped (1, 1, 224, 224, 3)
+    """
+    # 1. Resize and convert to array
+    img = image.resize(target_size)
+    arr = np.array(img)
+    
+    # 2. MobileNetV2 preprocessing (normalizes to [-1, 1])
+    arr = tf.keras.applications.mobilenet_v2.preprocess_input(arr)
+    
+    # 3. Add dimensions:
+    #    - First expand to (1, 224, 224, 3) for batch
+    #    - Then expand to (1, 1, 224, 224, 3) for sequence
+    arr = np.expand_dims(arr, axis=0)  # Batch dim
+    arr = np.expand_dims(arr, axis=1)  # Sequence dim
+    
+    return arr
 
-# @auth_bp.route('/predict', methods=['POST'])
-# def predict():
-#     # Receive image blob
-#     file = request.files.get('image')
-#     if not file:
-#         return jsonify({'error': 'No image provided'}), 400
+def decode_prediction(pred: np.ndarray) -> str:
+    idx = np.argmax(pred, axis=1)[0]
+    return classes[idx]
 
-#     # Load into PIL
-#     image = Image.open(io.BytesIO(file.read())).convert('RGB')
-#     # Preprocess for model
-#     input_tensor = preprocess_image(image)
+@auth_bp.route('/capture')
+def capture_page():
+    return render_template('pose_capture.html')
 
-#     # Run model inference
-#     pred = model.predict(input_tensor)
-#     result = decode_prediction(pred)
+@auth_bp.route('/predict', methods=['POST'])
+def predict():
+    # Receive image blob
+    file = request.files.get('image')
+    if not file:
+        return jsonify({'error': 'No image provided'}), 400
 
-#     return jsonify({'result': result})
+    # Load into PIL
+    image = Image.open(io.BytesIO(file.read())).convert('RGB')
+    # Preprocess for model
+    input_tensor = preprocess_image(image)
+
+    # Run model inference
+    pred = model.predict(input_tensor)
+    result = decode_prediction(pred)
+
+    return jsonify({'result': result})
