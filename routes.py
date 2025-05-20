@@ -91,9 +91,6 @@ def ml_game():
 def gamepage():
     return render_template("gamepage.html", user=session.get('user'), lessons=lessons)
 
-@auth_bp.route("/video")
-def video():
-    return render_template("videolearning.html",user=session.get('user'), lessons=lessons)
 
 @auth_bp.route('/get-question')
 def get_question():
