@@ -7,6 +7,7 @@ async function loadQuestion() {
     document.getElementById('question').innerText = '🎉 Quiz Complete!';
     document.getElementById('choices').innerHTML = '';
     document.getElementById('sign-image').src = '/static/placeholder.png';
+    document.getElementById('feedback').innerText = '';
     return;
   }
 

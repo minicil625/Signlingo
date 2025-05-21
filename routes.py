@@ -83,6 +83,9 @@ with open('questions.json') as f:
 with open('lessons.json') as f:
     lessons = json.load(f)
 
+with open('ml_questions.json') as f:
+    ml_questions = json.load(f)
+
 @auth_bp.route('/ml_game', methods=['GET', 'POST'])
 def ml_game():
     return render_template("ML_game.html", user=session.get('user'), lessons= lessons)
@@ -98,7 +101,7 @@ def gamepage():
 
 @auth_bp.route('/get-question')
 def get_question():
-    question = get_random_question()
+    question = get_random_question(questions)
 
     # Randomize the choices
     choices = question['choices']
@@ -110,6 +113,18 @@ def get_question():
         'choices': random_choices,
         'answer': question['answer'],  # Keep the correct answer
         'image': question['image']
+    }
+
+    return jsonify(response)
+
+@auth_bp.route('/get-question-ml')
+def get_question_ml():
+    question = get_random_question(ml_questions)
+
+    # Prepare the response
+    response = {
+        'question': question['question'],
+        'answer': question['answer'],  # Keep the correct answer
     }
 
     return jsonify(response)

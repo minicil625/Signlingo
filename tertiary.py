@@ -11,10 +11,7 @@ def get_initials(full_name):
 from flask import session, jsonify
 import random,json
 
-with open('questions.json') as f:
-    questions = json.load(f)
-
-def get_random_question():
+def get_random_question(questions):
     if 'questions_asked' not in session or len(session['questions_asked']) >= 10:
         session['questions_asked'] = []  # Track asked questions
 
