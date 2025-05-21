@@ -169,11 +169,13 @@ def predict():
 
     # Load into PIL
     image = Image.open(io.BytesIO(file.read())).convert('RGB')
+
     # Preprocess for model
     input_tensor = preprocess_image(image)
 
     # Run model inference
     pred = model.predict(input_tensor)
+    print(pred)
     result = decode_prediction(pred)
 
     return jsonify({'result': result})
