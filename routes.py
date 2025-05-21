@@ -88,7 +88,7 @@ with open('ml_questions.json') as f:
 
 @auth_bp.route('/ml_game', methods=['GET', 'POST'])
 def ml_game():
-    return render_template("ML_game.html", user=session.get('user'), lessons= lessons)
+    return render_template("ML_game.html", user=session.get('user'), lessons=lessons)
 
 @auth_bp.route('/video_learning')
 def video_learning():
