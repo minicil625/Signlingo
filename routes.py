@@ -87,6 +87,10 @@ with open('lessons.json') as f:
 def ml_game():
     return render_template("ML_game.html", user=session.get('user'), lessons= lessons)
 
+@auth_bp.route('/video_learning')
+def video_learning():
+    return render_template("videolearning.html", user=session.get('user'), lessons=lessons)
+
 @auth_bp.route('/gamepage')
 def gamepage():
     return render_template("gamepage.html", user=session.get('user'), lessons=lessons)
