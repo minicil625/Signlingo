@@ -7,6 +7,7 @@ auth_bp = Blueprint('auth', __name__)  # Define the Blueprint
 
 @auth_bp.route('/')
 def home():
+    session.clear()
     return render_template('landingpage.html', user=session.get('user'))
 
 # ----------------------------------- AUTHENTICATION ------------------------------------------------
@@ -59,6 +60,9 @@ def dashboard():
     
     if not user_id:
         return redirect(url_for('auth.login'))
+    
+    login_today = session.get("today_login")
+    print(login_today)
 
     user = User.query.get(user_id)
     full_name = user.name
@@ -68,7 +72,8 @@ def dashboard():
     return render_template("Dashboard.html",
                            full_name=full_name, 
                            first_name=first_name, 
-                           initials=initials)
+                           initials=initials,
+                           login_today=login_today,)
 
 @auth_bp.route('/logout')
 def logout():
@@ -131,6 +136,7 @@ def get_question_ml():
 
 @auth_bp.route('/check-answer', methods=['POST'])
 def check_answer():
+    session["today_login"] = True
     data = request.json
     selected = data.get('selected')
     correct = data.get('correct')
@@ -238,6 +244,7 @@ def predict():
     letter = decode_prediction(pred)
 
     print(pred)
+    session["today_login"] = True
 
     return jsonify({
         'result': letter,
