@@ -1,5 +1,5 @@
 [
-    { "title": "Learn with Video", "status": "completed", "url": "/video_learning" },
-    { "title": "Quiz Challenge", "status": "current", "url": "/gamepage" },
+    { "title": "Learn with Video", "status": "current", "url": "/video_learning" },
+    { "title": "Quiz Challenge", "status": "not_started", "url": "/gamepage" },
     { "title": "Show Your Signs", "status": "not_started", "url": "/ml_game" }
 ]  
