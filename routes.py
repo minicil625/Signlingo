@@ -65,7 +65,7 @@ def dashboard():
 
     first_name,initials = get_initials(full_name)
 
-    return render_template("Dashboard.html", 
+    return render_template("Dashboard.html",
                            full_name=full_name, 
                            first_name=first_name, 
                            initials=initials)
@@ -138,42 +138,48 @@ def check_answer():
 
 
 # ----------------------------------- CNN-LSTM MODEL ------------------------------------------------
-from tensorflow.keras.models import load_model
-from PIL import Image
-import numpy as np
+
+
+import os
 import io
+import cv2
+import mediapipe as mp
+import numpy as np
 import tensorflow as tf
+from PIL import Image
+from flask import request, jsonify, render_template, Blueprint
+from tensorflow.keras.models import load_model
 
-# Load your CNN-LSTM model once at startup
-model = load_model('models/Best Model.h5')
+# Load CNN-LSTM model
+MODEL_PATH = 'models/Newest_model_refined_b0.h5'
+model = load_model(MODEL_PATH)
 
-# Define your class labels in order
-classes = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
+# Class labels
+CLASSES = [chr(i) for i in range(ord('A'), ord('Z') + 1)]
 
+# Mediapipe hand detector setup
+mp_hands = mp.solutions.hands
+mp_drawing = mp.solutions.drawing_utils
+hands_detector = mp_hands.Hands(
+    static_image_mode=True,
+    max_num_hands=2,
+    min_detection_confidence=0.3
+)
 
-def preprocess_image(image: Image.Image, target_size=(224, 224)) -> np.ndarray:
-    """
-    Prepares an image for LSTM model prediction.
-    Returns array shaped (1, 1, 224, 224, 3)
-    """
-    # 1. Resize and convert to array
-    img = image.resize(target_size)
-    arr = np.array(img)
-    
-    # 2. MobileNetV2 preprocessing (normalizes to [-1, 1])
-    arr = tf.keras.applications.mobilenet_v2.preprocess_input(arr)
-    
-    # 3. Add dimensions:
-    #    - First expand to (1, 224, 224, 3) for batch
-    #    - Then expand to (1, 1, 224, 224, 3) for sequence
-    arr = np.expand_dims(arr, axis=0)  # Batch dim
-    arr = np.expand_dims(arr, axis=1)  # Sequence dim
-    
-    return arr
+# Image preprocessing
+def preprocess_image(arr: np.ndarray, target_size=(224,224)) -> np.ndarray:
+    # Resize, preprocess, add batch & sequence dims
+    img = cv2.resize(arr, target_size)
+    img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    img = tf.keras.applications.efficientnet.preprocess_input(img)
+    img = np.expand_dims(img, axis=0)   # batch
+    img = np.expand_dims(img, axis=1)   # sequence
+    return img
 
+# Decode model prediction
 def decode_prediction(pred: np.ndarray) -> str:
     idx = np.argmax(pred, axis=1)[0]
-    return classes[idx]
+    return CLASSES[idx]
 
 @auth_bp.route('/capture')
 def capture_page():
@@ -186,15 +192,55 @@ def predict():
     if not file:
         return jsonify({'error': 'No image provided'}), 400
 
-    # Load into PIL
-    image = Image.open(io.BytesIO(file.read())).convert('RGB')
+    # Read image into OpenCV frame
+    data = file.read()
+    nparr = np.frombuffer(data, np.uint8)
+    frame = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
 
-    # Preprocess for model
-    input_tensor = preprocess_image(image)
+    # Detect hands
+    rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+    results = hands_detector.process(rgb)
+    if not results.multi_hand_landmarks:
+        return jsonify({'error': 'No hand detected'}), 400
 
-    # Run model inference
+    # Combine landmarks of both hands into one bounding box
+    h, w, _ = frame.shape
+    all_xs, all_ys = [], []
+    for hand_landmarks in results.multi_hand_landmarks:
+        all_xs.extend([lm.x for lm in hand_landmarks.landmark])
+        all_ys.extend([lm.y for lm in hand_landmarks.landmark])
+    xmin, xmax = int(min(all_xs) * w), int(max(all_xs) * w)
+    ymin, ymax = int(min(all_ys) * h), int(max(all_ys) * h)
+    margin = 20
+    xmin, ymin = max(0, xmin - margin), max(0, ymin - margin)
+    xmax, ymax = min(w, xmax + margin), min(h, ymax + margin)
+
+    # Crop combined region
+    crop = frame[ymin:ymax, xmin:xmax]
+    if crop.size == 0:
+        return jsonify({'error': 'Invalid crop'}), 400
+
+    # Draw debug overlay
+    debug_frame = frame.copy()
+    cv2.rectangle(debug_frame, (xmin, ymin), (xmax, ymax), (0, 255, 0), 2)
+    for hand_landmarks in results.multi_hand_landmarks:
+        mp_drawing.draw_landmarks(debug_frame, hand_landmarks, mp_hands.HAND_CONNECTIONS)
+
+    # Save debug images
+    debug_crop_path = os.path.join("static/uploads", 'last_crop.jpg')
+    debug_overlay_path = os.path.join("static/uploads", 'last_debug.jpg')
+    cv2.imwrite(debug_crop_path, crop)
+    cv2.imwrite(debug_overlay_path, debug_frame)
+
+    # Preprocess and predict
+    input_tensor = preprocess_image(crop)
     pred = model.predict(input_tensor)
-    print(pred)
-    result = decode_prediction(pred)
+    letter = decode_prediction(pred)
 
-    return jsonify({'result': result})
+    print(pred)
+
+    return jsonify({
+        'result': letter,
+        'debug_crop_url': '/' + debug_crop_path,
+        'debug_overlay_url': '/' + debug_overlay_path
+    })
