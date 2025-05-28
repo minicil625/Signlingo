@@ -103,6 +103,22 @@ def video_learning():
 def gamepage():
     return render_template("gamepage.html", user=session.get('user'), lessons=lessons)
 
+@auth_bp.route('/course')
+def course():
+    user_id = session.get('user_id')
+    
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    
+    login_today = session.get("today_login")
+    print(login_today)
+
+    user = User.query.get(user_id)
+    full_name = user.name
+
+    first_name,initials = get_initials(full_name)
+    return render_template("courses_final.html", user=session.get('user'), lessons=lessons, initials=initials, first_name=first_name, login_today=login_today)
+
 
 @auth_bp.route('/get-question')
 def get_question():
