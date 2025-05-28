@@ -42,7 +42,8 @@ h1 {
 }
 
 input[type="text"],
-input[type="password"] {
+input[type="password"],
+input[type="email"] {
   width: 95%;
   padding: 0.75rem;
   margin-bottom: 1.2rem;

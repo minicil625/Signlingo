@@ -30,7 +30,7 @@
             <input type="text" placeholder="Email" name="email">
             <div class="password-container">
                 <input type="password" placeholder="Password" name="password">
-                <a href="#" class="forgot-link">FORGOT?</a>
+                <a href="{{ url_for('auth.forgot_password') }}" class="forgot-link">FORGOT?</a>
             </div>
             
             <button type="submit" class="login-button">LOG IN</button>

@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
 from models import db, User  # Import the database and User model
 import random,json
 from tertiary import get_initials, get_random_question
@@ -79,6 +79,87 @@ def dashboard():
 def logout():
     session.pop('user', None)
     return redirect(url_for('auth.home'))
+
+# ----------------------------------- FORGOT/RESET PASSWORD ROUTES ------------------------------------
+
+# For simplicity, we'll store tokens in a dictionary.
+# In a production app, use a database table with expiration times.
+reset_tokens = {} 
+
+def generate_reset_token():
+    # Simple token generation. For production, use something more secure like `secrets.token_urlsafe()`.
+    return os.urandom(24).hex()
+
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            token = generate_reset_token()
+            reset_tokens[token] = user.email # Store token with user's email
+
+            # ** IMPORTANT: Email Sending Logic (Simulated) **
+            # In a real app, you would send an email here.
+            # from flask_mail import Message
+            # msg = Message("Password Reset Request",
+            #               sender="noreply@yourdomain.com",
+            #               recipients=[user.email])
+            # reset_url = url_for('auth.reset_password', token=token, _external=True)
+            # msg.body = f"To reset your password, visit the following link: {reset_url}"
+            # mail.send(msg) # Assuming you have Flask-Mail configured
+            print(f"\n------------- PASSWORD RESET TOKEN ----------------")
+            print(f"DEBUG: Password reset token for {user.email}: {token}")
+            print(f"DEBUG: Reset URL: {url_for('auth.reset_password', token=token, _external=True)}")
+            print(f"------------- PASSWORD RESET TOKEN ----------------\n")
+            flash(f'If an account with {email} exists, a password reset link has been (simulated) sent. Please check your (console/email) for the link.', 'success')
+        else:
+            flash(f'If an account with {email} exists, a password reset link has been (simulated) sent.', 'success') # Generic message for security
+            
+        return redirect(url_for('auth.forgot_password'))
+        
+    return render_template('forgot_password.html')
+
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    email = reset_tokens.get(token)
+    if not email:
+        flash('Invalid or expired password reset token.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        # This case should ideally not be reached if token was validly generated for an existing user
+        flash('User not found for this token.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        if new_password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return render_template('reset_password.html', token=token)
+        
+        if len(new_password) < 6: # Example: Enforce minimum password length
+            flash('Password must be at least 6 characters long.', 'danger')
+            return render_template('reset_password.html', token=token)
+
+        user.password = new_password # In a real app, you'd HASH this password before saving!
+        # from werkzeug.security import generate_password_hash
+        # user.password = generate_password_hash(new_password)
+        db.session.commit()
+        
+        # Invalidate the token after use
+        if token in reset_tokens:
+            del reset_tokens[token]
+            
+        flash('Your password has been successfully reset! Please log in.', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('reset_password.html', token=token)
+
 
 # ----------------------------------- GAME PAGE ------------------------------------------------
 
