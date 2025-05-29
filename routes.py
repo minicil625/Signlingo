@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
-from models import db, User  # Import the database and User model
+from models import Lesson, UserLessonStatus, db, User  # Import the database and User model
 import random,json
 from tertiary import get_initials, get_random_question
 
@@ -174,15 +174,183 @@ with open('ml_questions.json') as f:
 
 @auth_bp.route('/ml_game', methods=['GET', 'POST'])
 def ml_game():
-    return render_template("ML_game.html", user=session.get('user'), lessons=lessons)
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to play the ML game.', 'warning')
+        return redirect(url_for('auth.login'))
 
+    # Fetch all defined lessons from the database.
+    # This assumes the 'Lesson' table has been populated (e.g., by 'flask seed_lessons').
+    all_db_lessons = Lesson.query.order_by(Lesson.order).all()
+    if not all_db_lessons:
+        flash("Learning lessons are not yet available. Please ask an administrator to set them up.", "warning")
+        # Fallback to an empty list or handle as an error, but ideally, lessons should be seeded.
+        all_db_lessons = [] 
+
+    user_lessons_with_status = []
+    total_lessons_count = len(all_db_lessons)
+    completed_lessons_count = 0
+
+    for db_lesson in all_db_lessons:
+        status_entry = UserLessonStatus.query.filter_by(user_id=user_id, lesson_id=db_lesson.id).first()
+        current_status = status_entry.status if status_entry else 'not_started'
+        if current_status == 'completed':
+            completed_lessons_count += 1
+        
+        # Determine if the current page's lesson should be marked as 'current' in the sidebar
+        is_current_page_lesson = (request.path == db_lesson.url)
+        
+        display_status = current_status
+        if is_current_page_lesson and current_status != 'completed':
+            display_status = 'current'
+
+        user_lessons_with_status.append({
+            'title': db_lesson.title,
+            'url': db_lesson.url,
+            'status': display_status, # Use the determined display_status
+            'lesson_key': db_lesson.lesson_key
+        })
+    
+    module_progress_percent = (completed_lessons_count / total_lessons_count) * 100 if total_lessons_count > 0 else 0
+    
+    # Placeholder for module accuracy - you'd need a way to calculate and store this if desired
+    module_accuracy = "N/A" 
+
+    return render_template(
+        "ML_game.html", 
+        user=session.get('user'), 
+        lessons=user_lessons_with_status,
+        module_progress_percent=module_progress_percent,
+        completed_lessons_count=completed_lessons_count,
+        total_lessons_count=total_lessons_count,
+        module_accuracy=module_accuracy # Pass this to the template
+    )
+
+# In routes.py
 @auth_bp.route('/video_learning')
 def video_learning():
-    return render_template("videolearning.html", user=session.get('user'), lessons=lessons)
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to access learning videos.', 'warning')
+        return redirect(url_for('auth.login'))
 
+    all_db_lessons = Lesson.query.order_by(Lesson.order).all() # Assumes lessons are seeded
+    # (If not seeded, you might call get_or_create_lessons_from_json() here, but preferably seeded via CLI)
+    
+    user_lessons_with_status = []
+    total_lessons_count = len(all_db_lessons)
+    completed_lessons_count = 0
+
+    for db_lesson in all_db_lessons:
+        status_entry = UserLessonStatus.query.filter_by(user_id=user_id, lesson_id=db_lesson.id).first()
+        current_status = status_entry.status if status_entry else 'not_started'
+        if current_status == 'completed':
+            completed_lessons_count += 1
+        
+        is_current_page_lesson = (request.path == db_lesson.url)
+        user_lessons_with_status.append({
+            'title': db_lesson.title,
+            'url': db_lesson.url,
+            'status': 'current' if is_current_page_lesson and current_status != 'completed' else current_status,
+            'lesson_key': db_lesson.lesson_key
+        })
+    
+    module_progress_percent = (completed_lessons_count / total_lessons_count) * 100 if total_lessons_count > 0 else 0
+
+    return render_template(
+        "videolearning.html", 
+        user=session.get('user'), 
+        lessons=user_lessons_with_status,
+        module_progress_percent=module_progress_percent,
+        completed_lessons_count=completed_lessons_count,
+        total_lessons_count=total_lessons_count
+    )
+
+
+from initialization import get_or_create_lessons_from_json
 @auth_bp.route('/gamepage')
 def gamepage():
-    return render_template("gamepage.html", user=session.get('user'), lessons=lessons)
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to play the game.', 'warning')
+        return redirect(url_for('auth.login'))
+
+    # Ensure lessons are in the DB
+    all_db_lessons = get_or_create_lessons_from_json() # Call this to ensure lessons table is populated
+
+    user_lessons_with_status = []
+    total_lessons_count = len(all_db_lessons)
+    completed_lessons_count = 0
+
+    for db_lesson in all_db_lessons:
+        status_entry = UserLessonStatus.query.filter_by(user_id=user_id, lesson_id=db_lesson.id).first()
+        current_status = status_entry.status if status_entry else 'not_started'
+        if current_status == 'completed':
+            completed_lessons_count += 1
+        
+        # Determine if the lesson is 'current' based on its URL matching the request path
+        is_current_page_lesson = (request.path == db_lesson.url)
+
+        user_lessons_with_status.append({
+            'title': db_lesson.title,
+            'url': db_lesson.url,
+            'status': 'current' if is_current_page_lesson and current_status != 'completed' else current_status,
+            'lesson_key': db_lesson.lesson_key # Pass lesson_key for client-side updates
+        })
+    
+    # Recalculate overall progress for the "Bisindo Letters" module (assuming these lessons are it)
+    # The progress bar in gamepage.html uses an ID 'progress-bar' for quiz questions.
+    # The sidebar progress bar needs a different logic.
+    # Let's assume the sidebar progress bar should reflect module completion
+    module_progress_percent = (completed_lessons_count / total_lessons_count) * 100 if total_lessons_count > 0 else 0
+
+
+    # This 'lessons' variable is what your template iterates over for the sidebar
+    # The 'status' will now be user-specific.
+    print(f"DEBUG: Current request.path: {request.path}")
+    print(f"DEBUG: Lessons being passed to template: {user_lessons_with_status}")
+    session.pop('questions_asked', None) 
+    return render_template(
+        "gamepage.html", 
+        user=session.get('user'), 
+        lessons=user_lessons_with_status,
+        module_progress_percent=module_progress_percent, # For the main module progress bar
+        # The existing progress bar inside quiz-card is for quiz question progress, leave its JS as is.
+        completed_lessons_count=completed_lessons_count,
+        total_lessons_count=total_lessons_count
+        # You might need to pass accuracy if you calculate and store it.
+    )
+
+
+@auth_bp.route('/mark-lesson-status', methods=['POST'])
+def mark_lesson_status():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'success': False, 'error': 'User not logged in'}), 401
+
+    data = request.json
+    lesson_key = data.get('lesson_key') # Use the stable lesson_key
+    new_status = data.get('status', 'completed') # Default to 'completed'
+    score = data.get('score') # Optional
+
+    if not lesson_key:
+        return jsonify({'success': False, 'error': 'Lesson key missing'}), 400
+
+    lesson = Lesson.query.filter_by(lesson_key=lesson_key).first()
+    if not lesson:
+        return jsonify({'success': False, 'error': 'Lesson not found'}), 404
+
+    status_entry = UserLessonStatus.query.filter_by(user_id=user_id, lesson_id=lesson.id).first()
+    if not status_entry:
+        status_entry = UserLessonStatus(user_id=user_id, lesson_id=lesson.id)
+        db.session.add(status_entry)
+    
+    status_entry.status = new_status
+    if score is not None:
+        status_entry.score = score
+    
+    db.session.commit()
+    return jsonify({'success': True, 'message': f'Lesson {lesson.title} marked as {new_status}'})
 
 @auth_bp.route('/course')
 def course():
