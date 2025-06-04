@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify
-from models import db, User  # Import the database and User model
+from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
+from models import Lesson, UserLessonStatus, db, User  # Import the database and User model
 import random,json
 from tertiary import get_initials, get_random_question
 
@@ -7,6 +7,7 @@ auth_bp = Blueprint('auth', __name__)  # Define the Blueprint
 
 @auth_bp.route('/')
 def home():
+    session.clear()
     return render_template('landingpage.html', user=session.get('user'))
 
 # ----------------------------------- AUTHENTICATION ------------------------------------------------
@@ -59,6 +60,9 @@ def dashboard():
     
     if not user_id:
         return redirect(url_for('auth.login'))
+    
+    login_today = session.get("today_login")
+    print(login_today)
 
     user = User.query.get(user_id)
     full_name = user.name
@@ -68,12 +72,94 @@ def dashboard():
     return render_template("Dashboard.html",
                            full_name=full_name, 
                            first_name=first_name, 
-                           initials=initials)
+                           initials=initials,
+                           login_today=login_today,)
 
 @auth_bp.route('/logout')
 def logout():
     session.pop('user', None)
     return redirect(url_for('auth.home'))
+
+# ----------------------------------- FORGOT/RESET PASSWORD ROUTES ------------------------------------
+
+# For simplicity, we'll store tokens in a dictionary.
+# In a production app, use a database table with expiration times.
+reset_tokens = {} 
+
+def generate_reset_token():
+    # Simple token generation. For production, use something more secure like `secrets.token_urlsafe()`.
+    return os.urandom(24).hex()
+
+@auth_bp.route('/forgot-password', methods=['GET', 'POST'])
+def forgot_password():
+    if request.method == 'POST':
+        email = request.form.get('email')
+        user = User.query.filter_by(email=email).first()
+        
+        if user:
+            token = generate_reset_token()
+            reset_tokens[token] = user.email # Store token with user's email
+
+            # ** IMPORTANT: Email Sending Logic (Simulated) **
+            # In a real app, you would send an email here.
+            # from flask_mail import Message
+            # msg = Message("Password Reset Request",
+            #               sender="noreply@yourdomain.com",
+            #               recipients=[user.email])
+            # reset_url = url_for('auth.reset_password', token=token, _external=True)
+            # msg.body = f"To reset your password, visit the following link: {reset_url}"
+            # mail.send(msg) # Assuming you have Flask-Mail configured
+            print(f"\n------------- PASSWORD RESET TOKEN ----------------")
+            print(f"DEBUG: Password reset token for {user.email}: {token}")
+            print(f"DEBUG: Reset URL: {url_for('auth.reset_password', token=token, _external=True)}")
+            print(f"------------- PASSWORD RESET TOKEN ----------------\n")
+            flash(f'If an account with {email} exists, a password reset link has been (simulated) sent. Please check your (console/email) for the link.', 'success')
+        else:
+            flash(f'If an account with {email} exists, a password reset link has been (simulated) sent.', 'success') # Generic message for security
+            
+        return redirect(url_for('auth.forgot_password'))
+        
+    return render_template('forgot_password.html')
+
+@auth_bp.route('/reset-password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    email = reset_tokens.get(token)
+    if not email:
+        flash('Invalid or expired password reset token.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        # This case should ideally not be reached if token was validly generated for an existing user
+        flash('User not found for this token.', 'danger')
+        return redirect(url_for('auth.forgot_password'))
+
+    if request.method == 'POST':
+        new_password = request.form.get('password')
+        confirm_password = request.form.get('confirm_password')
+
+        if new_password != confirm_password:
+            flash('Passwords do not match.', 'danger')
+            return render_template('reset_password.html', token=token)
+        
+        if len(new_password) < 6: # Example: Enforce minimum password length
+            flash('Password must be at least 6 characters long.', 'danger')
+            return render_template('reset_password.html', token=token)
+
+        user.password = new_password # In a real app, you'd HASH this password before saving!
+        # from werkzeug.security import generate_password_hash
+        # user.password = generate_password_hash(new_password)
+        db.session.commit()
+        
+        # Invalidate the token after use
+        if token in reset_tokens:
+            del reset_tokens[token]
+            
+        flash('Your password has been successfully reset! Please log in.', 'success')
+        return redirect(url_for('auth.login'))
+
+    return render_template('reset_password.html', token=token)
+
 
 # ----------------------------------- GAME PAGE ------------------------------------------------
 
@@ -88,15 +174,199 @@ with open('ml_questions.json') as f:
 
 @auth_bp.route('/ml_game', methods=['GET', 'POST'])
 def ml_game():
-    return render_template("ML_game.html", user=session.get('user'), lessons=lessons)
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to play the ML game.', 'warning')
+        return redirect(url_for('auth.login'))
 
+    # Fetch all defined lessons from the database.
+    # This assumes the 'Lesson' table has been populated (e.g., by 'flask seed_lessons').
+    all_db_lessons = Lesson.query.order_by(Lesson.order).all()
+    if not all_db_lessons:
+        flash("Learning lessons are not yet available. Please ask an administrator to set them up.", "warning")
+        # Fallback to an empty list or handle as an error, but ideally, lessons should be seeded.
+        all_db_lessons = [] 
+
+    user_lessons_with_status = []
+    total_lessons_count = len(all_db_lessons)
+    completed_lessons_count = 0
+
+    for db_lesson in all_db_lessons:
+        status_entry = UserLessonStatus.query.filter_by(user_id=user_id, lesson_id=db_lesson.id).first()
+        current_status = status_entry.status if status_entry else 'not_started'
+        if current_status == 'completed':
+            completed_lessons_count += 1
+        
+        # Determine if the current page's lesson should be marked as 'current' in the sidebar
+        is_current_page_lesson = (request.path == db_lesson.url)
+        
+        display_status = current_status
+        if is_current_page_lesson and current_status != 'completed':
+            display_status = 'current'
+
+        user_lessons_with_status.append({
+            'title': db_lesson.title,
+            'url': db_lesson.url,
+            'status': display_status, # Use the determined display_status
+            'lesson_key': db_lesson.lesson_key
+        })
+    
+    module_progress_percent = (completed_lessons_count / total_lessons_count) * 100 if total_lessons_count > 0 else 0
+    
+    # Placeholder for module accuracy - you'd need a way to calculate and store this if desired
+    module_accuracy = "N/A" 
+
+    return render_template(
+        "ML_game.html", 
+        user=session.get('user'), 
+        lessons=user_lessons_with_status,
+        module_progress_percent=module_progress_percent,
+        completed_lessons_count=completed_lessons_count,
+        total_lessons_count=total_lessons_count,
+        module_accuracy=module_accuracy # Pass this to the template
+    )
+
+# In routes.py
 @auth_bp.route('/video_learning')
 def video_learning():
-    return render_template("videolearning.html", user=session.get('user'), lessons=lessons)
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to access learning videos.', 'warning')
+        return redirect(url_for('auth.login'))
 
+    all_db_lessons = Lesson.query.order_by(Lesson.order).all() # Assumes lessons are seeded
+    # (If not seeded, you might call get_or_create_lessons_from_json() here, but preferably seeded via CLI)
+    
+    user_lessons_with_status = []
+    total_lessons_count = len(all_db_lessons)
+    completed_lessons_count = 0
+
+    for db_lesson in all_db_lessons:
+        status_entry = UserLessonStatus.query.filter_by(user_id=user_id, lesson_id=db_lesson.id).first()
+        current_status = status_entry.status if status_entry else 'not_started'
+        if current_status == 'completed':
+            completed_lessons_count += 1
+        
+        is_current_page_lesson = (request.path == db_lesson.url)
+        user_lessons_with_status.append({
+            'title': db_lesson.title,
+            'url': db_lesson.url,
+            'status': 'current' if is_current_page_lesson and current_status != 'completed' else current_status,
+            'lesson_key': db_lesson.lesson_key
+        })
+    
+    module_progress_percent = (completed_lessons_count / total_lessons_count) * 100 if total_lessons_count > 0 else 0
+
+    return render_template(
+        "videolearning.html", 
+        user=session.get('user'), 
+        lessons=user_lessons_with_status,
+        module_progress_percent=module_progress_percent,
+        completed_lessons_count=completed_lessons_count,
+        total_lessons_count=total_lessons_count
+    )
+
+
+from initialization import get_or_create_lessons_from_json
 @auth_bp.route('/gamepage')
 def gamepage():
-    return render_template("gamepage.html", user=session.get('user'), lessons=lessons)
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to play the game.', 'warning')
+        return redirect(url_for('auth.login'))
+
+    # Ensure lessons are in the DB
+    all_db_lessons = get_or_create_lessons_from_json() # Call this to ensure lessons table is populated
+
+    user_lessons_with_status = []
+    total_lessons_count = len(all_db_lessons)
+    completed_lessons_count = 0
+
+    for db_lesson in all_db_lessons:
+        status_entry = UserLessonStatus.query.filter_by(user_id=user_id, lesson_id=db_lesson.id).first()
+        current_status = status_entry.status if status_entry else 'not_started'
+        if current_status == 'completed':
+            completed_lessons_count += 1
+        
+        # Determine if the lesson is 'current' based on its URL matching the request path
+        is_current_page_lesson = (request.path == db_lesson.url)
+
+        user_lessons_with_status.append({
+            'title': db_lesson.title,
+            'url': db_lesson.url,
+            'status': 'current' if is_current_page_lesson and current_status != 'completed' else current_status,
+            'lesson_key': db_lesson.lesson_key # Pass lesson_key for client-side updates
+        })
+    
+    # Recalculate overall progress for the "Bisindo Letters" module (assuming these lessons are it)
+    # The progress bar in gamepage.html uses an ID 'progress-bar' for quiz questions.
+    # The sidebar progress bar needs a different logic.
+    # Let's assume the sidebar progress bar should reflect module completion
+    module_progress_percent = (completed_lessons_count / total_lessons_count) * 100 if total_lessons_count > 0 else 0
+
+
+    # This 'lessons' variable is what your template iterates over for the sidebar
+    # The 'status' will now be user-specific.
+    print(f"DEBUG: Current request.path: {request.path}")
+    print(f"DEBUG: Lessons being passed to template: {user_lessons_with_status}")
+    session.pop('questions_asked', None) 
+    return render_template(
+        "gamepage.html", 
+        user=session.get('user'), 
+        lessons=user_lessons_with_status,
+        module_progress_percent=module_progress_percent, # For the main module progress bar
+        # The existing progress bar inside quiz-card is for quiz question progress, leave its JS as is.
+        completed_lessons_count=completed_lessons_count,
+        total_lessons_count=total_lessons_count
+        # You might need to pass accuracy if you calculate and store it.
+    )
+
+
+@auth_bp.route('/mark-lesson-status', methods=['POST'])
+def mark_lesson_status():
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'success': False, 'error': 'User not logged in'}), 401
+
+    data = request.json
+    lesson_key = data.get('lesson_key') # Use the stable lesson_key
+    new_status = data.get('status', 'completed') # Default to 'completed'
+    score = data.get('score') # Optional
+
+    if not lesson_key:
+        return jsonify({'success': False, 'error': 'Lesson key missing'}), 400
+
+    lesson = Lesson.query.filter_by(lesson_key=lesson_key).first()
+    if not lesson:
+        return jsonify({'success': False, 'error': 'Lesson not found'}), 404
+
+    status_entry = UserLessonStatus.query.filter_by(user_id=user_id, lesson_id=lesson.id).first()
+    if not status_entry:
+        status_entry = UserLessonStatus(user_id=user_id, lesson_id=lesson.id)
+        db.session.add(status_entry)
+    
+    status_entry.status = new_status
+    if score is not None:
+        status_entry.score = score
+    
+    db.session.commit()
+    return jsonify({'success': True, 'message': f'Lesson {lesson.title} marked as {new_status}'})
+
+@auth_bp.route('/course')
+def course():
+    user_id = session.get('user_id')
+    
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    
+    login_today = session.get("today_login")
+    print(login_today)
+
+    user = User.query.get(user_id)
+    full_name = user.name
+
+    first_name,initials = get_initials(full_name)
+    return render_template("courses_final.html", user=session.get('user'), lessons=lessons, initials=initials, first_name=first_name, login_today=login_today)
 
 
 @auth_bp.route('/get-question')
@@ -131,10 +401,119 @@ def get_question_ml():
 
 @auth_bp.route('/check-answer', methods=['POST'])
 def check_answer():
+    session["today_login"] = True
     data = request.json
     selected = data.get('selected')
     correct = data.get('correct')
     return jsonify({"result": selected == correct})
+
+@auth_bp.route('/edit-account', methods=['GET', 'POST'])
+def edit_account():
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to edit your account.', 'warning')
+        return redirect(url_for('auth.login'))
+
+    user = User.query.get(user_id)
+    full_name = user.name
+    first_name,initials = get_initials(full_name)
+
+    if not user:
+        flash('User not found. Please log in again.', 'danger')
+        session.pop('user_id', None)
+        session.pop('user', None)
+        session.pop('user_name', None)
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'POST':
+        # Get data from form
+        name = request.form.get('name')
+        age_str = request.form.get('age')
+        email = request.form.get('email')
+        
+        current_password_form = request.form.get('current_password') # Renamed to avoid confusion with user.password
+        new_password = request.form.get('new_password')
+        confirm_new_password = request.form.get('confirm_new_password')
+
+        # Validate Age
+        try:
+            age = int(age_str) if age_str else user.age 
+        except ValueError:
+            flash('Invalid age format.', 'danger')
+            form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+            return render_template('edit_account.html', current_user_data=form_data, user=user, initials=initials)
+
+        # Update basic information
+        user.name = name if name else "Anonymous Wanderer"
+        user.age = age
+
+        # Email validation and update
+        if email and email != user.email:
+            existing_user_with_email = User.query.filter(User.email == email, User.id != user.id).first()
+            if existing_user_with_email:
+                flash('That email address is already in use by another account.', 'danger')
+                form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+            user.email = email
+            session['user'] = email 
+
+        # Password change logic (without hashing)
+        password_changed = False
+        if new_password: 
+            if not current_password_form:
+                flash('Please enter your current password to set a new one.', 'danger')
+                form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+
+            # Direct plain text comparison (INSECURE)
+            if user.password != current_password_form:
+                flash('Incorrect current password.', 'danger')
+                form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+
+            if new_password != confirm_new_password:
+                flash('New passwords do not match.', 'danger')
+                form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+            
+            if len(new_password) < 6: # Example minimum length
+                 flash('New password must be at least 6 characters long.', 'danger')
+                 form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                 return render_template('edit_account.html', current_user_data=form_data, user=user, initials=initials)
+
+            user.password = new_password # Storing new password in plain text (INSECURE)
+            password_changed = True
+        
+        try:
+            db.session.commit()
+            if password_changed:
+                flash('Profile and password updated successfully!', 'success')
+            else:
+                flash('Profile updated successfully!', 'success')
+            # It's good to redirect to GET after a successful POST to prevent re-submission on refresh
+            # And also to show the updated data pre-filled in the form
+            return redirect(url_for('auth.edit_account')) 
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Error updating profile for user {user.id}: {e}")
+            flash('An error occurred while updating your profile. Please try again.', 'danger')
+            # If an error occurs during commit, re-render with existing form data (excluding passwords)
+            form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+            # Pre-fill with the data that was *attempted* to be saved
+            form_data['name'] = name 
+            form_data['age'] = age_str # Use original string for age input
+            form_data['email'] = email
+            return render_template('edit_account.html', current_user_data=form_data, user=user, error='Database commit error.', initials=initials)
+
+
+    # For GET request or if POST had errors that re-render the page
+    current_user_data_for_form = {
+        'name': user.name,
+        'age': user.age,
+        'email': user.email
+    }
+    return render_template('edit_account.html', current_user_data=current_user_data_for_form, user=user, initials=initials)
+
 
 
 # ----------------------------------- CNN-LSTM MODEL ------------------------------------------------
@@ -238,6 +617,7 @@ def predict():
     letter = decode_prediction(pred)
 
     print(pred)
+    session["today_login"] = True
 
     return jsonify({
         'result': letter,

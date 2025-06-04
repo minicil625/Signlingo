@@ -8,15 +8,23 @@
       padding: 40px;
     }
 
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      background-color: #fff;
-      border-radius: 16px;
-      padding: 24px;
-      color: #2C3E50;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-    }
+      /* Add this to videostyle.css */
+  .main_wrapper {
+    margin-left: 300px; /* This should be the width of your .sidebar */
+    padding: 20px; /* Or your desired padding for the main content area */
+  }
+
+  /* Your existing .container style in videostyle.css will then apply to the
+  content card *within* this .main_wrapper area. */
+  .container {
+    max-width: 800px;
+    margin: 0 auto; /* This will center the container within the main_wrapper's available space */
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    color: #2C3E50;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  }
 
     h1 {
       margin-top: 0;
@@ -79,7 +87,7 @@
     height: 100%;
     background: linear-gradient(90deg, #4153ef,#8e44ef);
     border-radius: 3px;
-    width: 45%;
+    width: 0%;
     transition: width 0.3s ease;
 }
 

@@ -30,16 +30,16 @@
             <input type="text" placeholder="Email" name="email">
             <div class="password-container">
                 <input type="password" placeholder="Password" name="password">
-                <a href="#" class="forgot-link">FORGOT?</a>
+                <a href="{{ url_for('auth.forgot_password') }}" class="forgot-link">FORGOT?</a>
             </div>
             
             <button type="submit" class="login-button">LOG IN</button>
-        </form>
-        
+        </form> 
+
         <div class="divider">
             <span class="divider-text">OR</span>
         </div>
-        
+
         <div class="social-buttons">
             <button class="social-button">
                 <svg width="20" height="20" viewBox="0 0 24 24" fill="#1877F2">
@@ -58,6 +58,7 @@
             </button>
         </div>
         
+        <!--  -->
         <p class="terms-text">
             By signing in to Signlingo, you agree to our <a href="#">Terms</a> and <a href="#">Privacy Policy</a>.
         </p>

@@ -12,19 +12,21 @@
     <div class="sidebar">
         <h4 class="mb-4">Bisindo Letters</h4>
         
+
+        
         <div class="stats-container">
             <div class="stat-item">
-                <div class="stat-number">7/10</div>
+                <div class="stat-number">{{ completed_lessons_count }}/{{ total_lessons_count }}</div>
                 <div class="stat-label">Progress</div>
             </div>
             <div class="stat-item">
-                <div class="stat-number">85%</div>
+                <div class="stat-number">N/A</div> 
                 <div class="stat-label">Accuracy</div>
             </div>
         </div>
 
         <div class="progress-bar-container">
-            <div class="progress-bar-fill"></div>
+            <div class="progress-bar-fill" style="width: {{ module_progress_percent }}%;"></div>
         </div>
 
         <!-- ! Make sure to actually make a javascript for lesson status later on -->
@@ -45,28 +47,15 @@
 
     <div class="main_wrapper">
         <div class="main-content">
-            <div class="quiz-card">
+            {% set temp_lesson = lessons|selectattr('url', 'equalto', request.path)|first %}
+            <div class="quiz-card" data-lesson-key="{{ temp_lesson.lesson_key if temp_lesson and temp_lesson.lesson_key else 'KEY_NOT_FOUND_IN_LESSON' }}">
                 <div class="progress-bar-container internal-progress">
                     <div class="progress-bar-fill" id="progress-bar"></div>
                 </div>
-                <!-- Question image -->
                 <img id="sign-image" src="/static/placeholder.png" alt="Sign Image" class="world-icon">
-        
-                <!-- Question text -->
-                <div id="question" class="question-text">
-                    Loading question...
-                </div>
-    
-                <!-- Answer choices -->
-                <div id="choices" class="options-grid">
-                    <!-- Buttons will be inserted dynamically here -->
-                </div>
-    
-                <!-- Feedback -->
+                <div id="question" class="question-text">Loading question...</div>
+                <div id="choices" class="options-grid"></div>
                 <div id="feedback" class="text-center fw-bold mb-3" style="font-size: 1.2rem;"></div>
-    
-                <!-- No more "Next" button, loading is automatic -->
-    
             </div>
         </div>
     </div>

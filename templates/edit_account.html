@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Your Profile</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/7fb2b68ee1.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="{{ url_for('static', filename='signstyle.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <style>
+        :root {
+            --primary-color: #2e51a0;
+            --light-bg: #f2f5fa;
+            --border-color: #e0e6ed;
+            --text-color: #333;
+            --text-secondary: #707070;
+            --success-color: #5ba86b;
+            --button-hover: #4e9a5c;
+        }
+
+        
+        body {
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .navigation-buttons {
+            display: none; 
+        }
+        
+        .main-content-wrapper {
+            padding: 0;
+            min-height: auto;
+            width: 100%;
+            max-width: 1600px; /* Increased max-width for wider layout */
+            margin: 0 auto;
+        }
+        
+        .container {
+            background-color: white;
+            border-radius: 15px;
+            padding: 40px; /* Increased padding */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+            max-width: 1400px; /* Increased max-width significantly */
+            width: 90%; /* Use percentage for better responsiveness */
+            margin: 20px auto;
+        }
+        
+        h2 { 
+            color: var(--primary-color);
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+        }
+        
+        h2:before {
+            content: "👤";
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        
+        .form-section-divider {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-weight: 500;
+            color: var(--text-secondary); 
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 0.5rem;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            padding-bottom: 20px;
+            margin-bottom: 30px; /* Increased margin */
+            max-width: 800px; /* Limit width of the header */
+            margin-left: 0;
+            margin-right: auto;
+        }
+        
+        .profile-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-color: #5b8b94; 
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: 500;
+            margin-right: 20px;
+        }
+
+        .profile-header h3 {
+            margin-bottom: 0.25rem;
+            text-align: left; 
+        }
+
+        .profile-header p { 
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+        
+        input[type="text"],
+        input[type="email"],
+        input[type="password"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            margin-bottom: 20px;
+            box-sizing: border-box; 
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: center; /* Center the button */
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+                max-width: 95%; 
+                width: 95%;
+            }
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .profile-image {
+                margin-bottom: 10px;
+            }
+            /* Responsive columns: stack them on smaller screens */
+            .form-columns-wrapper {
+                grid-template-columns: 1fr; /* Stack columns */
+            }
+        }
+        
+        .page-subtitle {
+            color: var(--text-secondary);
+            margin-bottom: 30px;
+            margin-top: -15px;
+            text-align: center; 
+        }
+
+        /* --- CSS FOR TWO-COLUMN LAYOUT --- */
+        .form-columns-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Two equal columns */
+            gap: 60px; /* Increased gap for wider layout */
+            margin-bottom: 30px;
+            max-width: 1200px; /* Limit max width of the form columns */
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .form-column .form-field-group { 
+            margin-bottom: 24px; /* Slightly increased spacing */
+        }
+        
+        .form-column .form-field-group:last-child {
+             margin-bottom: 0; 
+        }
+        
+        .form-column .form-field-group input {
+            margin-bottom: 0; 
+        }
+
+        .form-column > .form-section-divider:first-child {
+            margin-top: 0;
+        }
+        
+        /* Responsive adjustments for columns */
+        @media (max-width: 992px) {
+            .form-columns-wrapper {
+                gap: 40px; /* Reduced gap for medium screens */
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .form-columns-wrapper {
+                grid-template-columns: 1fr; /* Stack columns on smaller screens */
+                gap: 20px; /* Further reduced gap when stacked */
+            }
+            .form-column {
+                margin-bottom: 20px;
+            }
+            .form-column:last-child {
+                margin-bottom: 0;
+            }
+        }
+        
+        
+        /* Error message styling */
+        .error-message {
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .error-message i {
+            margin-right: 10px;
+            font-size: 18px;
+        }
+        
+        .error-message p {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+    <button type="button" class="universal-history-back-button" onclick="window.location.href='{{ url_for('auth.dashboard') }}'" title="Go Back">
+        <i class="fas fa-arrow-left"></i> Back to dashboard
+    </button>
+
+    <div class="navigation-buttons">
+        <button class="nav-btn" onclick="window.location.href='{{ url_for('auth.dashboard') }}'"><i class="fas fa-arrow-left"></i> Back to Dashboard</button>
+    </div>
+
+    <div class="main-content-wrapper">
+        <form class="container" id="edit-account-form" method="POST" action="{{ url_for('auth.edit_account') }}">
+            <h2>Account Details</h2>             
+            <p class="page-subtitle">Manage your profile information and account settings</p>
+
+            <div class="profile-header">
+                <div class="profile-image">{{ initials }}</div>
+                <div>
+                    <h3>{{ current_user_data.name if current_user_data else 'Username' }}</h3>
+                    <p>Edit your account information below.</p>
+                </div>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="error-message" style="background-color: {% if category == 'success' %}#d1e7dd; color: #0f5132; border: 1px solid #badbcc;{% else %}#f8d7da; color: #842029; border: 1px solid #f5c2c7;{% endif %}">
+                            <i class="fa-solid {% if category == 'success' %}fa-check-circle{% else %}fa-triangle-exclamation{% endif %}"></i>
+                            <p>{{ message }}</p>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+            
+            {% if error %} 
+            <div class="error-message" style="background-color: #f8d7da; color: #842029; border: 1px solid #f5c2c7;">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+                <p>{{ error }}</p>
+            </div>
+            {% endif %}
+
+            <div class="form-columns-wrapper">
+                <div class="form-column" id="personal-info-column">
+                    <p class="form-section-divider">Personal Information</p>
+                    <div class="form-field-group">
+                        <label for="name">Username</label>
+                        <input type="text" id="name" placeholder="Enter your full name" name="name" value="{{ current_user_data.name if current_user_data else '' }}">
+                    </div>
+                    <div class="form-field-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="Enter your email address" name="email" value="{{ current_user_data.email if current_user_data else '' }}" required>
+                    </div>
+                    <div class="form-field-group">
+                        <label for="age">Age</label>
+                        <input type="number" id="age" placeholder="Enter your age" name="age" value="{{ current_user_data.age if current_user_data else '' }}" required>
+                    </div>
+                </div>
+
+                <div class="form-column" id="password-column">
+                    <p class="form-section-divider">Change Password (optional)</p>
+                    <div class="form-field-group">
+                        <label for="current_password">Old Password</label>
+                        <input type="password" id="current_password" placeholder="Enter current password to change" name="current_password">
+                    </div>
+                    <div class="form-field-group">
+                        <label for="new_password">New Password</label>
+                        <input type="password" id="new_password" placeholder="Enter new password (min. 6 characters)" name="new_password">
+                    </div>
+                    <div class="form-field-group">
+                        <label for="confirm_new_password">Confirm New Password</label>
+                        <input type="password" id="confirm_new_password" placeholder="Confirm new password" name="confirm_new_password">
+                    </div>
+                </div>
+            </div> 
+            
+            <div class="button-group"> 
+                <button type="submit" class="create-account-btn">Save Changes</button>
+            </div>
+        
+        </form>
+    </div>
+
+</body>
+</html>

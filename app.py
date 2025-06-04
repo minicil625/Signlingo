@@ -14,6 +14,9 @@ app.register_blueprint(auth_bp)
 
 db.init_app(app)
 
+from flask_migrate import Migrate
+migrate = Migrate(app, db) # <-- Add this line to initialize Flask-Migrate
+
 # Create database tables before first request
 @app.cli.command()
 def initdb():

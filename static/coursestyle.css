@@ -1,0 +1,219 @@
+* {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f5f5f5;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4F8EF7, #2563EB);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 0 0 20px 20px;
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+
+        .profile-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            color: #4F8EF7;
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        .course-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .course-card {
+            border-radius: 20px;
+            padding: 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .course-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .course-card.teal {
+            background: linear-gradient(135deg, #20E5A6, #14B8A6);
+        }
+
+        .course-card.purple {
+            background: linear-gradient(135deg, #8B5CF6, #7C3AED);
+        }
+
+        .card-content {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .asl-letters {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .hand-sign {
+            width: 50px;
+            height: 50px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .hand-drawing {
+            width: 35px;
+            height: 35px;
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .letters {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 10px;
+        }
+
+        .letter {
+            font-size: 24px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .please-word {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .please-text {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .word-illustration {
+            width: 60px;
+            height: 40px;
+            margin: 0 auto;
+            stroke: #333;
+            stroke-width: 2;
+            fill: none;
+        }
+
+        .ok-hand {
+            width: 80px;
+            height: 80px;
+            background: #e0e0e0;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto;
+        }
+
+        .ok-sign {
+            width: 50px;
+            height: 50px;
+            stroke: #333;
+            stroke-width: 3;
+            fill: none;
+        }
+
+        .card-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 2px;
+        }
+
+        .difficulty-badges {
+            display: flex;
+            gap: 3px;
+        }
+
+        .badge {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+        }
+
+        .badge.active {
+            background: white;
+        }
+
+        .learn-button {
+            background: white;
+            color: #333;
+            border: none;
+            padding: 12px 0;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+        }
+
+        .learn-button:hover {
+            background: #f8f8f8;
+            transform: translateY(-2px);
+        }
+
+        .learn-button:active {
+            transform: translateY(0);
+        }
+
+        /* asdfgsdfgh */
