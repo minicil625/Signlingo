@@ -407,6 +407,114 @@ def check_answer():
     correct = data.get('correct')
     return jsonify({"result": selected == correct})
 
+@auth_bp.route('/edit-account', methods=['GET', 'POST'])
+def edit_account():
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to edit your account.', 'warning')
+        return redirect(url_for('auth.login'))
+
+    user = User.query.get(user_id)
+    full_name = user.name
+    first_name,initials = get_initials(full_name)
+
+    if not user:
+        flash('User not found. Please log in again.', 'danger')
+        session.pop('user_id', None)
+        session.pop('user', None)
+        session.pop('user_name', None)
+        return redirect(url_for('auth.login'))
+
+    if request.method == 'POST':
+        # Get data from form
+        name = request.form.get('name')
+        age_str = request.form.get('age')
+        email = request.form.get('email')
+        
+        current_password_form = request.form.get('current_password') # Renamed to avoid confusion with user.password
+        new_password = request.form.get('new_password')
+        confirm_new_password = request.form.get('confirm_new_password')
+
+        # Validate Age
+        try:
+            age = int(age_str) if age_str else user.age 
+        except ValueError:
+            flash('Invalid age format.', 'danger')
+            form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+            return render_template('edit_account.html', current_user_data=form_data, user=user, initials=initials)
+
+        # Update basic information
+        user.name = name if name else "Anonymous Wanderer"
+        user.age = age
+
+        # Email validation and update
+        if email and email != user.email:
+            existing_user_with_email = User.query.filter(User.email == email, User.id != user.id).first()
+            if existing_user_with_email:
+                flash('That email address is already in use by another account.', 'danger')
+                form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+            user.email = email
+            session['user'] = email 
+
+        # Password change logic (without hashing)
+        password_changed = False
+        if new_password: 
+            if not current_password_form:
+                flash('Please enter your current password to set a new one.', 'danger')
+                form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+
+            # Direct plain text comparison (INSECURE)
+            if user.password != current_password_form:
+                flash('Incorrect current password.', 'danger')
+                form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+
+            if new_password != confirm_new_password:
+                flash('New passwords do not match.', 'danger')
+                form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+            
+            if len(new_password) < 6: # Example minimum length
+                 flash('New password must be at least 6 characters long.', 'danger')
+                 form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+                 return render_template('edit_account.html', current_user_data=form_data, user=user, initials=initials)
+
+            user.password = new_password # Storing new password in plain text (INSECURE)
+            password_changed = True
+        
+        try:
+            db.session.commit()
+            if password_changed:
+                flash('Profile and password updated successfully!', 'success')
+            else:
+                flash('Profile updated successfully!', 'success')
+            # It's good to redirect to GET after a successful POST to prevent re-submission on refresh
+            # And also to show the updated data pre-filled in the form
+            return redirect(url_for('auth.edit_account')) 
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Error updating profile for user {user.id}: {e}")
+            flash('An error occurred while updating your profile. Please try again.', 'danger')
+            # If an error occurs during commit, re-render with existing form data (excluding passwords)
+            form_data = {k: v for k, v in request.form.items() if 'password' not in k}
+            # Pre-fill with the data that was *attempted* to be saved
+            form_data['name'] = name 
+            form_data['age'] = age_str # Use original string for age input
+            form_data['email'] = email
+            return render_template('edit_account.html', current_user_data=form_data, user=user, error='Database commit error.', initials=initials)
+
+
+    # For GET request or if POST had errors that re-render the page
+    current_user_data_for_form = {
+        'name': user.name,
+        'age': user.age,
+        'email': user.email
+    }
+    return render_template('edit_account.html', current_user_data=current_user_data_for_form, user=user, initials=initials)
+
+
 
 # ----------------------------------- CNN-LSTM MODEL ------------------------------------------------
 
