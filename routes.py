@@ -530,7 +530,7 @@ from flask import request, jsonify, render_template, Blueprint
 from tensorflow.keras.models import load_model
 
 # Load CNN-LSTM model
-MODEL_PATH = 'models/Newest_model_refined_b0.h5'
+MODEL_PATH = 'models/EfficientNet Model.h5'
 model = load_model(MODEL_PATH)
 
 # Class labels
