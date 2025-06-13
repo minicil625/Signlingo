@@ -1,52 +1,120 @@
-# Software Engineering Project - SignLingo
+# SignLingo: Sign Language Learning Platform
 
-## Description
-tulis desc pas ga mager
+SignLingo is an interactive web application designed to make learning sign language accessible and engaging. The platform utilizes a variety of multimedia components, including video tutorials, image-based quizzes, and a real-time, AI-powered hand sign recognition game that provides instant feedback using a device's webcam.
 
-## Prerequisites
+## Features
 
-- Python 3.x
-- pip (Python package installer)
+* **User Authentication System:** Secure user registration, login, logout, and password recovery.
+* **Profile Management:** Users can view and edit their personal information (name, age, email) and change their password.
+* **Centralized Learning Dashboard:** A personalized hub that greets users and provides an at-a-glance overview of their learning progress.
+* **Interactive Learning Activities:**
+    * **Video Lessons:** Instructional videos for foundational knowledge.
+    * **Multiple-Choice Quizzes:** Tests knowledge with image-based questions, immediate feedback, and sound effects.
+    * **AI Hand Sign Recognition:** A real-time practice environment that uses a machine learning model to analyze a user's signs via their webcam.
+* **Gamification & Progress Tracking:**
+    * **Dynamic Progress Monitoring:** Visual progress bars and lesson statuses (`Completed`, `Current`, `Not Started`) track user advancement.
+    * **Motivational Elements:** A daily streak counter encourages consistent practice.
+* **Responsive and Animated UI:** The interface provides smooth visual feedback on user interactions, with animations on buttons, links, and other elements.
 
-## Setup Instructions
+## Technology Stack
 
-### 1. Create a Virtual Environment
+* **Backend:** Python, Flask, SQLAlchemy
+* **Database:** SQLite (with Flask-Migrate for schema migrations)
+* **Frontend:** HTML, CSS, JavaScript
+* **Machine Learning:** TensorFlow/Keras, OpenCV, MediaPipe
+* **Containerization:** Docker, Docker Compose
 
-To create a virtual environment, navigate to your project directory and run:
+---
 
-python -m venv venv
+## How to Run This Project
 
-### 2. Activate the Virtual Environment
+There are two methods to run this application: using Docker (easiest and most reliable) or setting it up locally in a Python virtual environment.
 
-- **On Windows:**
+### Method 1: Running with Docker (Recommended)
 
-  venv\Scripts\activate
+This is the easiest way to run the application, as it handles all dependencies and setup within a self-contained environment.
 
-- **On macOS and Linux:**
+**1. Prerequisite:**
+* You must have **[Docker Desktop](https://www.docker.com/products/docker-desktop/)** installed and running on your machine.
 
-  source venv/bin/activate
+**2. Build and Run the Application:**
+Open your terminal or command prompt, navigate to the project's root directory (the one containing `docker-compose.yml`), and run this single command:
 
-### 3. Install Requirements
+```bash
+docker compose up --build
+```
+* The `--build` flag will build the Docker image from the `Dockerfile` the first time you run it. This might take several minutes as it downloads the Python image and installs all dependencies, including TensorFlow.
+* Once the build is complete, the container will start, and you will see server logs in your terminal.
 
-After activating the virtual environment, install the required packages using:
+**3. Access the Application:**
+Open your web browser and navigate to:
 
-pip install -r requirements.txt
+**[http://localhost:5001](http://localhost:5001)**
 
-### 4. Run the Flask App
+*(Note: We use port 5001 because the `docker-compose.yml` file maps it from the container's port 5000 to avoid potential conflicts on the host machine).*
 
-To run the application, execute the following command:
+**4. Stopping the Application:**
+To stop the application, go back to your terminal and press `Ctrl+C`.
 
-python app.py
+---
 
-The app should now be running on http://127.0.0.1:5000/ by default.
+### Method 2: Local Setup (Without Docker)
 
-## Notes
+If you prefer to run the application directly on your machine, follow these steps.
 
-- Ensure that your virtual environment is activated whenever you are working on this project.
-- To deactivate the virtual environment, simply run the command:
+**1. Prerequisites:**
+* Python 3.10
+* Git
 
-deactivate
+**2. Setup Instructions:**
 
-## License
+* **a. Clone the Repository:**
+    ```bash
+    git clone [https://github.com/AnangAyman/Software-engineering-S4.git](https://github.com/AnangAyman/Software-engineering-S4.git)
+    cd Software-engineering-S4
+    ```
 
-This project is licensed under the MIT License.
+* **b. Create and Activate a Virtual Environment:**
+    * On macOS/Linux:
+        ```bash
+        python3 -m venv venv
+        source venv/bin/activate
+        ```
+    * On Windows:
+        ```bash
+        python -m venv venv
+        .\venv\Scripts\activate
+        ```
+
+* **c. Install Dependencies:**
+    ```bash
+    pip install -r requirements.txt
+    ```
+    *(Note: This step may take a significant amount of time due to the size of the machine learning libraries.)*
+
+* **d. Set Up the Database:**
+    This command will apply the migration scripts to create the `users.sqlite` file and all necessary tables.
+    ```bash
+    flask db upgrade
+    ```
+
+* **e. Seed the Database with Initial Data:**
+    This command populates the database with the lessons.
+    ```bash
+    flask seed_lessons
+    ```
+
+* **f. Run the Application:**
+    ```bash
+    flask run
+    ```
+
+* **g. Access the Application:**
+    Open your web browser and navigate to: **[http://127.0.0.1:5000](http://127.0.0.1:5000)**
+
+### Using the Application
+
+1.  Navigate to the site and click **Sign Up** to create an account.
+2.  **Log In** with your new credentials.
+3.  You will be directed to the **Dashboard**, where you can start learning.
+4.  For the **Hand Sign Recognition** game, your browser will ask for permission to use your webcam. You must **Allow** it for the feature to work.
