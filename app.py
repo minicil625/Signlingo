@@ -25,6 +25,15 @@ def initdb():
         db.create_all()
     print("Database initialized successfully!")
 
+# In app.py
+@app.cli.command("seed_lessons")
+def seed_lessons_command():
+    """Seeds the Lesson table from lessons.json."""
+    from routes import get_or_create_lessons_from_json # Or from initialization import ...
+    with app.app_context(): # Establish app context
+        get_or_create_lessons_from_json()
+    print("Lessons seeded/updated successfully from lessons.json!")
+
 if __name__ == '__main__':
     app.run(debug=True)
 
