@@ -1,14 +1,10 @@
-// static/gamelogic.js
-
 let correctAnswer = '';
 let questionsAsked = 0;
 const TOTAL_QUESTIONS = 10;
 
-// Get references to the audio elements (can be done once, globally)
 const correctSound = document.getElementById('correct-sound');
 const incorrectSound = document.getElementById('incorrect-sound');
 
-// Function to play a sound, resetting it first if it's already playing
 function playSound(soundElement) {
     if (soundElement) {
         soundElement.currentTime = 0; // Rewind to the start
@@ -17,8 +13,6 @@ function playSound(soundElement) {
 }
 
 async function loadQuestion() {
-    // ... (your existing loadQuestion logic from the "full javascript code" response)
-    // This function should include the quizCompleted call and robust fetch error handling
     if (questionsAsked >= TOTAL_QUESTIONS) {
         const quizCardElement = document.querySelector('.quiz-card');
         const lessonKey = quizCardElement ? quizCardElement.dataset.lessonKey : null;
@@ -104,10 +98,8 @@ async function checkAnswer(selected, buttonElement) {
             buttonElement.style.background = 'var(--incorrect)';
             buttonElement.style.color = '#fff';
             playSound(incorrectSound); // *** Play incorrect sound ***
-            // Optionally highlight the correct answer
             options.forEach(opt => {
                 if (opt.innerText === correctAnswer) {
-                    // Example: opt.style.outline = '2px solid var(--correct)';
                 }
             });
         }
@@ -125,7 +117,6 @@ async function checkAnswer(selected, buttonElement) {
 }
 
 function updateProgress() {
-    // ... (your existing updateProgress logic) ...
     const percent = (questionsAsked / TOTAL_QUESTIONS) * 100;
     const progressBarFill = document.getElementById('progress-bar');
     if (progressBarFill) {
@@ -134,11 +125,9 @@ function updateProgress() {
 }
 
 async function quizCompleted(lessonKeyForThisQuiz) {
-    // ... (your existing quizCompleted logic from the "full javascript code" response) ...
-    // This function should handle updating UI for quiz completion and POSTing to /mark-lesson-status
     document.getElementById('question').innerText = '🎉 Quiz Complete!';
     document.getElementById('choices').innerHTML = '';
-    document.getElementById('sign-image').src = '/static/placeholder.png';
+    document.getElementById('sign-image').src = '/static/Assets/great_job.png';
     document.getElementById('feedback').innerText = 'Saving progress...';
 
 

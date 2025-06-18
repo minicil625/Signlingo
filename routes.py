@@ -82,12 +82,10 @@ def logout():
 
 # ----------------------------------- FORGOT/RESET PASSWORD ROUTES ------------------------------------
 
-# For simplicity, we'll store tokens in a dictionary.
-# In a production app, use a database table with expiration times.
+# Later on use database table with expiry if I have time
 reset_tokens = {} 
 
 def generate_reset_token():
-    # Simple token generation. For production, use something more secure like `secrets.token_urlsafe()`.
     return os.urandom(24).hex()
 
 @auth_bp.route('/forgot-password', methods=['GET', 'POST'])
@@ -100,15 +98,6 @@ def forgot_password():
             token = generate_reset_token()
             reset_tokens[token] = user.email # Store token with user's email
 
-            # ** IMPORTANT: Email Sending Logic (Simulated) **
-            # In a real app, you would send an email here.
-            # from flask_mail import Message
-            # msg = Message("Password Reset Request",
-            #               sender="noreply@yourdomain.com",
-            #               recipients=[user.email])
-            # reset_url = url_for('auth.reset_password', token=token, _external=True)
-            # msg.body = f"To reset your password, visit the following link: {reset_url}"
-            # mail.send(msg) # Assuming you have Flask-Mail configured
             print(f"\n------------- PASSWORD RESET TOKEN ----------------")
             print(f"DEBUG: Password reset token for {user.email}: {token}")
             print(f"DEBUG: Reset URL: {url_for('auth.reset_password', token=token, _external=True)}")
@@ -146,9 +135,7 @@ def reset_password(token):
             flash('Password must be at least 6 characters long.', 'danger')
             return render_template('reset_password.html', token=token)
 
-        user.password = new_password # In a real app, you'd HASH this password before saving!
-        # from werkzeug.security import generate_password_hash
-        # user.password = generate_password_hash(new_password)
+        user.password = new_password
         db.session.commit()
         
         # Invalidate the token after use
@@ -457,7 +444,6 @@ def edit_account():
             user.email = email
             session['user'] = email 
 
-        # Password change logic (without hashing)
         password_changed = False
         if new_password: 
             if not current_password_form:
@@ -465,7 +451,6 @@ def edit_account():
                 form_data = {k: v for k, v in request.form.items() if 'password' not in k}
                 return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
 
-            # Direct plain text comparison (INSECURE)
             if user.password != current_password_form:
                 flash('Incorrect current password.', 'danger')
                 form_data = {k: v for k, v in request.form.items() if 'password' not in k}
