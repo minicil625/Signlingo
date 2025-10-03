@@ -6,150 +6,235 @@
     <title>Learning Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="static/homestyle.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg py-3">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">SignLingo</a>
-            <div class="navbar-nav mx-auto">
-                <a class="nav-link active" href="#">Dashboard</a>
-                <a class="nav-link" href="#" onclick="window.location.href='/course'">Courses</a>
-            </div>
-            <div class="d-flex align-items-center gap-3">
-                <button class="action-button">
-                    <i class="fas fa-bell"></i>
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <a class="sidebar-brand" href="#">SignLingo</a>
+        </div>
+        <div class="sidebar-menu">
+            <a class="sidebar-link active" href="#">
+                <i class="fas fa-th-large"></i>
+                <span>Dashboard</span>
+            </a>
+            <a class="sidebar-link" href="#" onclick="window.location.href='/course'">
+                <i class="fas fa-book"></i>
+                <span>Courses</span>
+            </a>
+            <a class="sidebar-link" href="#">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Daily Quiz</span>
+            </a>
+            <a class="sidebar-link" href="#">
+                <i class="fas fa-trophy"></i>
+                <span>Rank</span>
+            </a>
+            <a class="sidebar-link" href="#">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Shop</span>
+            </a>
+            <a class="sidebar-link" href="#">
+                <i class="fas fa-crown"></i>
+                <span>Premium</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a class="sidebar-link" href="#" onclick="window.location.href='/edit-account'">
+                <i class="fas fa-cog"></i>
+                <span>Settings</span>
+            </a>
+            <a class="sidebar-link sidebar-profile" href="#" onclick="window.location.href='/profile'">
+                <div class="profile-circle-sidebar">{{ initials }}</div>
+                <button class="logout-btn" onclick="window.location.href='/logout'">
+                    <i class="fas fa-sign-out-alt"></i>
                 </button>
-                <div class="profile-circle">{{ initials }}</div>
-            </div>
+            </a>
         </div>
     </nav>
 
-    <div class="container my-4">
-        <div class="row">
-            <div class="col-md-8">
-                <div class="d-flex align-items-center gap-2 mb-4">
-                    <span>✨</span>
-                    <h4 class="mb-0">Welcome, {{ full_name.split()[0] }}!</h4>
-                </div>
-
-                <div class="welcome-card mb-4">
-                    <small class="text-white-50 mb-2 d-block">Let's start</small>
-                    <h3 class="mb-3">Bisindo Letters</h3>
-                    <p>Test your skills in Bisindo Letters, where you'll learn to express written communication effectively using Bahasa Isyarat Indonesia (Indonesian Sign Language).</p>
-                    <button class="resume-btn" onclick="window.location.href='/video_learning'">
-                        Resume Learning
-                        <i class="fas fa-arrow-right"></i>
-                    </button>
-                    <img src="/static/Assets/Rocket.png" class="rocket-img" alt="Rocket">
-                </div>
-
-                <div class="stats-container">
-                    <div class="stat-card">
-                        <div class="stat-number">0%</div>
-                        <div>Average Score</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">0</div>
-                        <div>Completed Lessons</div>
-                    </div>
-                </div>
-
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <h5 class="mb-0">All modules</h5>
-                    <button class="action-button">
-                        <i class="fas fa-filter"></i>
-                    </button>
-                </div>
-
-                <div class="module-card">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <small class="badge-custom">MODULE</small>
-                            <h5 class="mt-2">Bisindo Letters</h5>
-                        </div>
-                        <button class="action-button" onclick="window.location.href='/video_learning'">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 0%"></div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-secondary">0% practiced</small>
-                        <small class="text-primary">3 lessons remaining</small>
-                    </div>
-                </div>
-
-                <div class="module-card">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div>
-                            <small class="badge-custom">MODULE</small>
-                            <h5 class="mt-2">Bisindo Phrases</h5>
-                        </div>
-                        <button class="action-button">
-                            <i class="fas fa-play"></i>
-                        </button>
-                    </div>
-                    <div class="progress">
-                        <div class="progress-bar" style="width: 0%"></div>
-                    </div>
-                    <div class="d-flex justify-content-between align-items-center">
-                        <small class="text-secondary">0% practiced</small>
-                        <small class="text-primary">3 lessons remaining</small>
-                    </div>
-                </div>
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-wrapper">
+            <div class="welcome-section mb-4">
+                <h1 class="hero-title">Welcome, {{ full_name.split()[0] }}!</h1>
             </div>
 
-            <div class="col-md-4">
-                <div class="module-card mb-4">
-                    <div class="text-center">
-                        <div class="profile-circle mx-auto mb-3">{{ initials }}</div>
-                        <h5>{{ full_name }}</h5>
-                        <button class="btn btn-light" onclick="window.location.href='/edit-account'">
-                            <i class="fas fa-cog me-2"></i>
-                            Edit Settings
+            <div class="row g-4">
+                <div class="col-lg-8">
+                    <!-- Hero Card -->
+                    <div class="hero-card mb-4">
+                        <div class="hero-content">
+                            <span class="hero-label">Let's start</span>
+                            <h2 class="section-title">Bisindo Letters</h2>
+                            <p class="body-large">Test your skills in Bisindo Letters, where you'll learn to express written communication effectively using Bahasa Isyarat Indonesia (Indonesian Sign Language).</p>
+                            <button class="btn-primary" onclick="window.location.href='/video_learning'">
+                                Resume Learning
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="stats-grid mb-4">
+                        <div class="stat-card">
+                            <div class="stat-number">0%</div>
+                            <div class="stat-label">Average Score</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-number">0</div>
+                            <div class="stat-label">Completed Lessons</div>
+                        </div>
+                    </div>
+
+                    <!-- Modules Section -->
+                    <div class="section-header">
+                        <h3 class="subheading">All modules</h3>
+                        <button class="icon-button">
+                            <i class="fas fa-filter"></i>
                         </button>
                     </div>
+
+                    <!-- Module Card 1 -->
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div>
+                                <span class="module-badge">MODULE</span>
+                                <h3 class="subheading mt-2">Module 1</h3>
+                            </div>
+                            <button class="icon-button icon-button-primary" onclick="window.location.href='/video_learning'">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="module-footer">
+                            <span class="caption">0% practiced</span>
+                            <span class="caption caption-accent">3 lessons remaining</span>
+                        </div>
+                    </div>
+
+                    <!-- Module Card 2 -->
+                    <div class="module-card">
+                        <div class="module-header">
+                            <div>
+                                <span class="module-badge">MODULE</span>
+                                <h3 class="subheading mt-2">Module 2</h3>
+                            </div>
+                            <button class="icon-button icon-button-primary">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+                        <div class="progress-container">
+                            <div class="progress-bar" style="width: 0%"></div>
+                        </div>
+                        <div class="module-footer">
+                            <span class="caption">0% practiced</span>
+                            <span class="caption caption-accent">3 lessons remaining</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="streak-container mb-4">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <i class="fas fa-fire text-danger"></i>
-                        {% if login_today == True %}
-                        <h5 class="mb-0">1 day streak!</h5>
-                        {% else %}
-                        <h5 class="mb-0">0 day streak!</h5>
-                        {% endif %}
-
+                <div class="col-lg-4">
+                    <!-- Summary Card -->
+                    <div class="summary-card mb-4">
+                        <div class="summary-item">
+                            <i class="fas fa-book-open summary-icon"></i>
+                            <div>
+                                <div class="summary-label">Current Course</div>
+                                <div class="summary-value">Bisindo</div>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-star summary-icon"></i>
+                            <div>
+                                <div class="summary-label">Total XP</div>
+                                <div class="summary-value">0 XP</div>
+                            </div>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-heart summary-icon-heart"></i>
+                            <div>
+                                <div class="summary-label">Lives</div>
+                                <div class="summary-value">5</div>
+                            </div>
+                        </div>
                     </div>
-                    <p class="text-secondary">Daily Streak</p>
-                    <div class="d-flex justify-content-between">
-                        {% if login_today == True %}
-                        <div class="streak-day">1</div>
-                        <div class="streak-day inactive">2</div>
-                        <div class="streak-day inactive">3</div>
-                        <div class="streak-day inactive">4</div>
-                        <div class="streak-day inactive">5</div>
-                        <div class="streak-day inactive">6</div>
-                        <div class="streak-day inactive">7</div>
-                        {% else %}
-                        <div class="streak-day inactive">1</div>
-                        <div class="streak-day inactive">2</div>
-                        <div class="streak-day inactive">3</div>
-                        <div class="streak-day inactive">4</div>
-                        <div class="streak-day inactive">5</div>
-                        <div class="streak-day inactive">6</div>
-                        <div class="streak-day inactive">7</div>
-                        {% endif %}
-                    </div>
-                </div>
 
-                <div class="inspiration-card">
-                    <h5 class="mb-4">If you put your mind to it, you can accomplish anything.</h5>
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-quote-left me-2"></i>
-                        <p class="mb-0">MARTY MCFLY</p>
+                    <!-- Premium Card -->
+                    <div class="premium-card mb-4">
+                        <div class="premium-icon">
+                            <i class="fas fa-crown"></i>
+                        </div>
+                        <h3 class="subheading mb-2">Try Premium</h3>
+                        <p class="caption-white mb-3">No ads, daily quiz & unlimited hearts</p>
+                        <button class="btn-premium">
+                            Upgrade Now
+                            <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+
+                    <!-- Streak Card -->
+                    <div class="streak-card mb-4">
+                        <div class="streak-header">
+                            <i class="fas fa-fire"></i>
+                            {% if login_today == True %}
+                            <h3 class="subheading">1 day streak!</h3>
+                            {% else %}
+                            <h3 class="subheading">0 day streak!</h3>
+                            {% endif %}
+                        </div>
+                        <p class="caption mb-3">Daily Streak</p>
+                        <div class="streak-days">
+                            {% if login_today == True %}
+                            <div class="streak-day active">1</div>
+                            <div class="streak-day">2</div>
+                            <div class="streak-day">3</div>
+                            <div class="streak-day">4</div>
+                            <div class="streak-day">5</div>
+                            <div class="streak-day">6</div>
+                            <div class="streak-day">7</div>
+                            {% else %}
+                            <div class="streak-day">1</div>
+                            <div class="streak-day">2</div>
+                            <div class="streak-day">3</div>
+                            <div class="streak-day">4</div>
+                            <div class="streak-day">5</div>
+                            <div class="streak-day">6</div>
+                            <div class="streak-day">7</div>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Rank Card -->
+                    <div class="rank-card mb-4">
+                        <div class="rank-header">
+                            <i class="fas fa-trophy"></i>
+                            <h3 class="subheading">Your League</h3>
+                        </div>
+                        <div class="rank-content">
+                            <div class="rank-badge">
+                                <i class="fas fa-medal"></i>
+                            </div>
+                            <div class="rank-info">
+                                <div class="rank-league">Bronze League</div>
+                                <div class="rank-position">#1st · 0 XP</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inspiration Card -->
+                    <div class="inspiration-card">
+                        <h3 class="subheading mb-4">If you put your mind to it, you can accomplish anything.</h3>
+                        <div class="inspiration-footer">
+                            <i class="fas fa-quote-left"></i>
+                            <p class="caption mb-0">MARTY MCFLY</p>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -157,6 +242,5 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</head>
 </body>
 </html>

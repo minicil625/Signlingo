@@ -5,7 +5,7 @@ document.querySelector('.login-button').addEventListener('click', function(e) {
     if (!(email && password)) {
         e.preventDefault();
         const errorMsg = document.getElementById('error-message');
-    errorMsg.style.display = 'flex';
+        errorMsg.style.display = 'flex';
         errorMsg.querySelector('.error').textContent = 'Please fill in all fields';
     }
 });
