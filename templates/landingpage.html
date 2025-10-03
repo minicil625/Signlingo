@@ -1,106 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Signlingo - Learn Sign Language</title>
-  <link rel="stylesheet" href="../static/landing.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SignLingo - Learn Sign Language Interactively</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../static/landing.css">
 </head>
 <body>
-  <header class="header">
-    <nav class="navbar">
-      <img src="../static/Assets/logo.png" alt="Signlingo Logo" class="logo">
-    </nav>
-    <div class="hero">
-      <div class="hero-text">
-        <h1>Learn Sign Language<br>the fun and effective way</h1>
-        <p>Join millions and start your journey to fluency today with engaging lessons and games.</p>
-        <div class="cta-buttons">
-          <button class="btn-primary" onclick="window.location.href='/register'">Get Started</button>
-          <button class="btn-secondary" onclick="window.location.href='/login'">I Already Have an Account</button>
+    <header>
+        <div class="logo">SignLingo</div>
+        <nav class="nav-links">
+            <a href="#features">Features</a>
+            <a href="#how">How It Works</a>
+            <a href="#about">About</a>
+            <button class="btn-primary" onclick="window.location.href='/register'">Start Learning</button>
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Learn Sign Language <span class="highlight">Through Your Camera</span></h1>
+            <p>Master sign language with interactive lessons powered by AI. Practice in real-time, get instant feedback, and track your progress—all from your browser.</p>
+            <div class="hero-cta">
+                <button class="btn-primary" onclick="window.location.href='/register'">Start Free Trial</button>
+                <button class="btn-secondary">Watch Demo</button>
+            </div>
         </div>
-      </div>
-      <div class="hero-image">
-        <img src="../static/Assets/earth.png" alt="Illustration of Earth">
-      </div>
-    </div>
-  </header>
+        <div class="hero-visual">
+            <div class="hand-demo">
+                <div class="camera-frame">
+                    <div class="scan-line"></div>
+                    <div class="hand-silhouette">✋</div>
+                </div>
+                <div class="feedback-bar">
+                    <div class="feedback-dots">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="feedback-score">98%</div>
+                </div>
+            </div>
+        </div>
+    </section>
 
-  <section class="languages">
-    <h2>Explore Courses in Your Language</h2>
-    <div class="language-carousel">
-      <button class="carousel-nav nav-left">&#8249;</button>
-      <div class="carousel-container">
-        <div class="language-option">English</div>
-        <div class="language-option">Indonesian</div>
-        <div class="language-option">German</div>
-        <div class="language-option">Italian</div>
-        <div class="language-option">Portuguese</div>
-        <div class="language-option">Dutch</div>
-        <div class="language-option">Japanese</div>
-      </div>
-      <button class="carousel-nav nav-right">&#8250;</button>
-    </div>
-  </section>
+    <section class="features" id="features">
+        <div class="section-header">
+            <h2>Why <span class="highlight">SignLingo?</span></h2>
+            <p>The most interactive way to learn sign language</p>
+        </div>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📹</div>
+                <h3>Real-Time Recognition</h3>
+                <p>Use your camera to practice signs and get instant feedback on your hand positions and movements.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🎯</div>
+                <h3>Adaptive Learning</h3>
+                <p>Personalized lessons that adapt to your pace and focus on areas where you need more practice.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🏆</div>
+                <h3>Gamified Progress</h3>
+                <p>Earn badges, level up, and compete with friends as you master each sign and lesson.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Conversation Practice</h3>
+                <p>Practice real conversations with interactive scenarios that simulate everyday situations.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📊</div>
+                <h3>Track Your Journey</h3>
+                <p>Visualize your progress with detailed stats and insights into your learning patterns.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🌍</div>
+                <h3>Multiple Sign Languages</h3>
+                <p>Learn ASL, BSL, and other sign languages with region-specific lessons and vocabulary.</p>
+            </div>
+        </div>
+    </section>
 
-  <section class="features">
-    <h2>Why You'll Love Signlingo</h2>
-    <div class="feature-grid">
-      <div class="feature-card">
-        <div class="feature-icon">&#10003;</div>
-        <h3>Effective and Efficient</h3>
-        <p>Our science-backed lessons build real-world signing skills.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#129513;</div>
-        <h3>Personalized Learning</h3>
-        <p>Lessons adapt to your pace to help you learn better.</p>
-      </div>
-      <div class="feature-card">
-        <div class="feature-icon">&#129417;</div>
-        <h3>Stay Motivated</h3>
-        <p>Gamified learning keeps your daily streak alive!</p>
-      </div>
-    </div>
-  </section>
+    <section class="how-it-works" id="how">
+        <div class="section-header">
+            <h2>How It <span class="highlight">Works</span></h2>
+            <p>Get started in three simple steps</p>
+        </div>
+        <div class="steps">
+            <div class="step">
+                <div class="step-number">1</div>
+                <h3>Choose Your Path</h3>
+                <p>Select your sign language and skill level. Start with basics or jump to advanced lessons.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">2</div>
+                <h3>Practice with AI</h3>
+                <p>Follow along with video demonstrations, then use your camera to practice. Our AI gives you real-time feedback.</p>
+            </div>
+            <div class="step">
+                <div class="step-number">3</div>
+                <h3>Master & Progress</h3>
+                <p>Complete quizzes, unlock new levels, and watch yourself become fluent in sign language.</p>
+            </div>
+        </div>
+    </section>
 
-  <footer class="footer">
-    <div class="footer-container">
-      <div class="footer-column">
-        <h4>About</h4>
-        <ul>
-          <li>Our Mission</li>
-          <li>Team</li>
-          <li>Research</li>
-          <li>Careers</li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h4>Support</h4>
-        <ul>
-          <li>Help Center</li>
-          <li>Community</li>
-          <li>Privacy</li>
-          <li>Terms</li>
-        </ul>
-      </div>
-      <div class="footer-column">
-        <h4>Social</h4>
-        <ul>
-          <li>YouTube</li>
-          <li>Twitter</li>
-          <li>Facebook</li>
-          <li>Instagram</li>
-        </ul>
-      </div>
-      <div class="cta-footer">
-        <p>Start learning today with Signlingo</p>
-        <button onclick="window.location.href='/register'">Join Now</button>
-      </div>
-    </div>
-  </footer>
+    <section class="cta-section">
+        <h2>Ready to Start Your Journey?</h2>
+        <p>Join thousands of learners mastering sign language through interactive practice</p>
+        <button class="btn-white" onclick="startLearning()" onclick="window.location.href='/register'">Get Started Free</button>
+    </section>
 
-  <script src="../static/landinglogic.js"></script>
+    <footer>
+        <p>&copy; 2025 SignLingo. Making sign language accessible to everyone.</p>
+    </footer>
+
+    <script src="../static/landinglogic.js"></script>
 </body>
 </html>
