@@ -1,45 +1,24 @@
-// Select elements
-const leftNav = document.querySelector('.nav-left');
-const rightNav = document.querySelector('.nav-right');
-const container = document.querySelector('.carousel-container');
+// Animate feature cards on scroll
+const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -100px 0px'
+};
 
-function cycleRight() {
-  const firstItem = container.firstElementChild;
-  container.appendChild(firstItem.cloneNode(true)); 
-  container.removeChild(firstItem);
-}
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '0';
+            entry.target.style.transform = 'translateY(20px)';
+            setTimeout(() => {
+                entry.target.style.transition = 'all 0.6s ease';
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }, 100);
+            observer.unobserve(entry.target);
+        }
+    });
+}, observerOptions);
 
-function cycleLeft() {
-  const lastItem = container.lastElementChild;
-  container.insertBefore(lastItem.cloneNode(true), container.firstElementChild); 
-  container.removeChild(lastItem);
-}
-
-leftNav.addEventListener('click', () => {
-  cycleLeft();
-  resetAutoCycle();
+document.querySelectorAll('.feature-card, .step').forEach(el => {
+    observer.observe(el);
 });
-
-rightNav.addEventListener('click', () => {
-  cycleRight();
-  resetAutoCycle();
-});
-
-function autoCycle() {
-  cycleRight();
-}
-
-let autoCycleInterval = setInterval(autoCycle, 3000);
-
-function resetAutoCycle() {
-  clearInterval(autoCycleInterval);
-  autoCycleInterval = setInterval(autoCycle, 3000);
-}
-
-// document.querySelector('.btn-primary').addEventListener('click', function() {
-//   location.href = '../signin/signin.html';
-// });
-
-// document.querySelector('.btn-secondary').addEventListener('click', function() {
-//   location.href ='../login/login.html';
-// });

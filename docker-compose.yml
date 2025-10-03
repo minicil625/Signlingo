@@ -5,6 +5,8 @@ services:
     build: .
     ports:
       - "5001:5000"
+    volumes:
+      - .:/app
     environment:
       # You can add environment variables here if needed
       # e.g., FLASK_DEBUG=1 for development
