@@ -48,12 +48,12 @@
                 <i class="fas fa-cog"></i>
                 <span>Settings</span>
             </a>
-            <a class="sidebar-link sidebar-profile" href="#" onclick="window.location.href='/profile'">
-                <div class="profile-circle-sidebar">{{ initials }}</div>
+            <div class="sidebar-link sidebar-profile">
+                <a class="profile-circle-sidebar" onclick="window.location.href='/edit-account'">{{ initials }}</a>
                 <button class="logout-btn" onclick="window.location.href='/logout'">
                     <i class="fas fa-sign-out-alt"></i>
                 </button>
-            </a>
+            </div>
         </div>
     </nav>
 
