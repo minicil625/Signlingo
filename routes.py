@@ -73,7 +73,9 @@ def dashboard():
                            full_name=full_name, 
                            first_name=first_name, 
                            initials=initials,
-                           login_today=login_today,)
+                           login_today=login_today,
+                           user_points = user.points,
+                           user_league = user.league)
 
 @auth_bp.route('/logout')
 def logout():
