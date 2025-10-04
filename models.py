@@ -3,14 +3,51 @@ from datetime import datetime # Import datetime
 
 db = SQLAlchemy()
 
+# Association table for friendships
+friendship = db.Table('friendship',
+    db.Column('user_id', db.Integer, db.ForeignKey('user.id'), primary_key=True),
+    db.Column('friend_id', db.Integer, db.ForeignKey('user.id'), primary_key=True)
+)
+
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(80), nullable=False)
     age = db.Column(db.Integer)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    password = db.Column(db.String(80), nullable=False) # Remember to hash passwords in a real app!
-    # Relationship to user lesson statuses
+    password = db.Column(db.String(80), nullable=False)
+    points = db.Column(db.Integer, default=0)  # Add points column
     lesson_statuses = db.relationship('UserLessonStatus', backref='user', lazy=True)
+    friends = db.relationship('User',
+                               secondary=friendship,
+                               primaryjoin=(friendship.c.user_id == id),
+                               secondaryjoin=(friendship.c.friend_id == id),
+                               backref=db.backref('friend_of', lazy='dynamic'),
+                               lazy='dynamic')
+    
+    # Add these two helper methods
+    def add_friend(self, user):
+        if not self.is_friends_with(user):
+            self.friends.append(user)
+            user.friends.append(self)
+
+    def remove_friend(self, user):
+        if self.is_friends_with(user):
+            self.friends.remove(user)
+            user.friends.remove(self)
+
+    def is_friends_with(self, user):
+        return self.friends.filter(friendship.c.friend_id == user.id).count() > 0
+    
+    @property
+    def league(self):
+        if self.points < 100:
+            return "Bronze"
+        elif self.points < 500:
+            return "Silver"
+        elif self.points < 1000:
+            return "Gold"
+        else:
+            return "Diamond"
 
 class Lesson(db.Model):
     id = db.Column(db.Integer, primary_key=True)

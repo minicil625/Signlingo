@@ -73,7 +73,9 @@ def dashboard():
                            full_name=full_name, 
                            first_name=first_name, 
                            initials=initials,
-                           login_today=login_today,)
+                           login_today=login_today,
+                           user_points = user.points,
+                           user_league = user.league)
 
 @auth_bp.route('/logout')
 def logout():
@@ -146,6 +148,89 @@ def reset_password(token):
         return redirect(url_for('auth.login'))
 
     return render_template('reset_password.html', token=token)
+
+# ----------------------------------- Leaderboards page ----------------------------------------
+
+# ... (at the end of your routes.py file)
+
+@auth_bp.route('/leaderboard')
+def leaderboard():
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to view the leaderboard.', 'warning')
+        return redirect(url_for('auth.login'))
+
+    current_user = User.query.get(user_id)
+    if not current_user:
+        flash('User not found.', 'danger')
+        return redirect(url_for('auth.login'))
+
+    # 1. Get friends leaderboard (including the current user in the list)
+    # We query the friends and then add the current user to the list for display
+    friends = current_user.friends.all()
+    friends_leaderboard = sorted(friends + [current_user], key=lambda x: x.points, reverse=True)
+
+    # 2. Get league leaderboard
+    # We find all users and filter them by league in Python.
+    # For a very large app, you might do this with a more complex database query.
+    all_users = User.query.order_by(User.points.desc()).all()
+    league_users = [user for user in all_users if user.league == current_user.league]
+
+    return render_template('leaderboard.html',
+                           current_user=current_user,
+                           friends_leaderboard=friends_leaderboard,
+                           league_users=league_users,
+                           league_name=current_user.league)
+
+# ----------------------------------- FRIENDS & USERS LIST -----------------------------------
+
+@auth_bp.route('/users')
+def list_users():
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to find users.', 'warning')
+        return redirect(url_for('auth.login'))
+
+    current_user = User.query.get(user_id)
+    all_users = User.query.filter(User.id != user_id).order_by(User.name).all()
+
+    return render_template('users.html', all_users=all_users, current_user=current_user)
+
+@auth_bp.route('/add_friend/<int:friend_id>', methods=['POST'])
+def add_friend(friend_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.get(user_id)
+    friend_to_add = User.query.get(friend_id)
+
+    if friend_to_add:
+        user.add_friend(friend_to_add)
+        db.session.commit()
+        flash(f'You are now friends with {friend_to_add.name}!', 'success')
+    else:
+        flash('User not found.', 'danger')
+
+    return redirect(url_for('auth.list_users'))
+
+@auth_bp.route('/remove_friend/<int:friend_id>', methods=['POST'])
+def remove_friend(friend_id):
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+
+    user = User.query.get(user_id)
+    friend_to_remove = User.query.get(friend_id)
+
+    if friend_to_remove:
+        user.remove_friend(friend_to_remove)
+        db.session.commit()
+        flash(f'You have removed {friend_to_remove.name} from your friends.', 'info')
+    else:
+        flash('User not found.', 'danger')
+
+    return redirect(url_for('auth.list_users'))
 
 
 # ----------------------------------- GAME PAGE ------------------------------------------------
@@ -392,6 +477,15 @@ def check_answer():
     data = request.json
     selected = data.get('selected')
     correct = data.get('correct')
+
+    is_correct = (selected == correct)
+    if is_correct:
+        user_id = session.get('user_id')
+        if user_id:
+            user = User.query.get(user_id)
+            if user:
+                user.points += 10  # Add 10 points
+                db.session.commit() # Save the change to the database
     return jsonify({"result": selected == correct})
 
 @auth_bp.route('/edit-account', methods=['GET', 'POST'])
