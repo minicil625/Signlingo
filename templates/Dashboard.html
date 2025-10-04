@@ -15,10 +15,10 @@
     <!-- Sidebar Navigation -->
     <nav class="sidebar">
         <div class="sidebar-header">
-            <a class="sidebar-brand" href="#">SignLingo</a>
+            <a class="sidebar-brand" href="/dashboard">SignLingo</a>
         </div>
         <div class="sidebar-menu">
-            <a class="sidebar-link active" href="#">
+            <a class="sidebar-link active" href="/dashboard">
                 <i class="fas fa-th-large"></i>
                 <span>Dashboard</span>
             </a>
@@ -30,7 +30,7 @@
                 <i class="fas fa-clipboard-list"></i>
                 <span>Daily Quiz</span>
             </a>
-            <a class="sidebar-link" href="#">
+            <a class="sidebar-link" href="/leaderboard">
                 <i class="fas fa-trophy"></i>
                 <span>Rank</span>
             </a>
@@ -222,8 +222,8 @@
                                 <i class="fas fa-medal"></i>
                             </div>
                             <div class="rank-info">
-                                <div class="rank-league">Bronze League</div>
-                                <div class="rank-position">#1st · 0 XP</div>
+                                <div class="rank-league">{{ user_league }} league</div>
+                                <div class="rank-position">#1st · {{user_points}} XP</div>
                             </div>
                         </div>
                     </div>
