@@ -12,61 +12,71 @@
     <link rel="stylesheet" href="static/css/home_style.css">
 </head>
 <body>
-    <!-- Sidebar Navigation -->
-    <nav class="sidebar">
+    <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
             <a class="sidebar-brand" href="/dashboard">SignLingo</a>
         </div>
         <div class="sidebar-menu">
             <a class="sidebar-link active" href="/dashboard">
-                <i class="fas fa-th-large"></i>
+                <i class="fas fa-house"></i>
                 <span>Dashboard</span>
             </a>
-            <a class="sidebar-link" href="#" onclick="window.location.href='/course'">
+            <a class="sidebar-link" href="/course">
                 <i class="fas fa-book"></i>
                 <span>Courses</span>
             </a>
-            <a class="sidebar-link" href="#">
+            <a class="sidebar-link" href="/daily-quiz">
                 <i class="fas fa-clipboard-list"></i>
                 <span>Daily Quiz</span>
             </a>
             <a class="sidebar-link" href="/leaderboard">
                 <i class="fas fa-trophy"></i>
-                <span>Rank</span>
+                <span>Leaderboard</span>
             </a>
-            <a class="sidebar-link" href="#">
+            <a class="sidebar-link" href="/shop">
                 <i class="fas fa-shopping-bag"></i>
                 <span>Shop</span>
             </a>
-            <a class="sidebar-link" href="#">
+            <a class="sidebar-link" href="/premium">
                 <i class="fas fa-crown"></i>
                 <span>Premium</span>
             </a>
+            <button class="more-options-button" id="moreOptionsButton">
+                <i class="fas fa-ellipsis-h"></i>
+            </button>
         </div>
         <div class="sidebar-footer">
-            <a class="sidebar-link" href="#" onclick="window.location.href='/edit-account'">
-                <i class="fas fa-cog"></i>
-                <span>Settings</span>
+            <a class="profile-link" href="/edit-account">
+                <div class="profile-circle-sidebar">{{ initials }}</div>
+                <span>Profile</span>
             </a>
-            <div class="sidebar-link sidebar-profile">
-                <a class="profile-circle-sidebar" onclick="window.location.href='/edit-account'">{{ initials }}</a>
-                <button class="logout-btn" onclick="window.location.href='/logout'">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
-            </div>
+            <a class="logout-link" href="/logout">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
         </div>
     </nav>
 
-    <!-- Main Content -->
+    <div class="dropup-menu" id="dropupMenu">
+        <a href="/edit-account">
+            <i class="fas fa-user-circle"></i>
+            <span>Profile</span>
+        </a>
+        <a href="/logout" class="logout-link-mobile">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Logout</span>
+        </a>
+    </div>
+
+
     <div class="main-content">
-        <div class="content-wrapper">
+         <div class="content-wrapper">
             <div class="welcome-section mb-4">
                 <h1 class="hero-title">Welcome, {{ full_name.split()[0] }}!</h1>
             </div>
 
             <div class="row g-4">
                 <div class="col-lg-8">
-                    <!-- Hero Card -->
                     <div class="hero-card mb-4">
                         <div class="hero-content">
                             <span class="hero-label">Let's start</span>
@@ -79,7 +89,6 @@
                         </div>
                     </div>
 
-                    <!-- Stats Grid -->
                     <div class="stats-grid mb-4">
                         <div class="stat-card">
                             <div class="stat-number">0%</div>
@@ -91,7 +100,6 @@
                         </div>
                     </div>
 
-                    <!-- Modules Section -->
                     <div class="section-header">
                         <h3 class="subheading">All modules</h3>
                         <button class="icon-button">
@@ -99,7 +107,6 @@
                         </button>
                     </div>
 
-                    <!-- Module Card 1 -->
                     <div class="module-card">
                         <div class="module-header">
                             <div>
@@ -119,7 +126,6 @@
                         </div>
                     </div>
 
-                    <!-- Module Card 2 -->
                     <div class="module-card">
                         <div class="module-header">
                             <div>
@@ -141,7 +147,6 @@
                 </div>
 
                 <div class="col-lg-4">
-                    <!-- Summary Card -->
                     <div class="summary-card mb-4">
                         <div class="summary-item">
                             <i class="fas fa-book-open summary-icon"></i>
@@ -166,7 +171,6 @@
                         </div>
                     </div>
 
-                    <!-- Premium Card -->
                     <div class="premium-card mb-4">
                         <div class="premium-icon">
                             <i class="fas fa-crown"></i>
@@ -179,7 +183,6 @@
                         </button>
                     </div>
 
-                    <!-- Streak Card -->
                     <div class="streak-card mb-4">
                         <div class="streak-header">
                             <i class="fas fa-fire"></i>
@@ -211,7 +214,6 @@
                         </div>
                     </div>
 
-                    <!-- Rank Card -->
                     <div class="rank-card mb-4">
                         <div class="rank-header">
                             <i class="fas fa-trophy"></i>
@@ -228,7 +230,6 @@
                         </div>
                     </div>
 
-                    <!-- Inspiration Card -->
                     <div class="inspiration-card">
                         <h3 class="subheading mb-4">If you put your mind to it, you can accomplish anything.</h3>
                         <div class="inspiration-footer">
@@ -242,5 +243,6 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../static/js/navbar_logic.js"></script>
 </body>
 </html>

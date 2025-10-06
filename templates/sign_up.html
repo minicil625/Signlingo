@@ -7,7 +7,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="../static/css/sign_style.css">
+    <link rel="stylesheet" href="../static/css/signup_style.css"> 
 </head>
 <body>
 
@@ -20,7 +20,7 @@
 <div class="login-container">
     <h1>Create your profile</h1>
     
-    <form method="POST" id="signup-form">
+    <form method="POST" id="signup-form" novalidate>
         
         {% if error %}
         <div class="error-message">
@@ -28,11 +28,17 @@
             <p class="error">{{ error }}</p>
         </div>
         {% endif %}
+        
+        <div id="client-error-message" class="error-message" style="display: none;">
+            <span>⚠</span>
+            <p class="error"></p>
+        </div>
     
-        <input type="text" placeholder="Name" name="name" required>
-        <input type="number" placeholder="Age" name="age" required>
-        <input type="email" placeholder="Email" name="email" required>
-        <input type="password" placeholder="Password" name="password" required>
+        <input type="text" placeholder="Name" name="name" id="name" required>
+        <input type="number" placeholder="Age" name="age" id="age" required>
+        <input type="email" placeholder="Email" name="email" id="email" required>
+        <input type="password" placeholder="Password" name="password" id="password" required>
+        <input type="password" placeholder="Confirm Password" name="confirm-password" id="confirm-password" required>
     
         <button type="submit" class="login-button">CREATE ACCOUNT</button>
 
@@ -41,7 +47,7 @@
         </div>
 
         <div class="social-buttons">
-            <button type="button" class="social-button" data-provider="facebook">
+             <button type="button" class="social-button" data-provider="facebook">
                 <svg width="20" height="20" viewBox="0 0 24 24">
                     <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#FF6F61"/>
                 </svg>
@@ -72,6 +78,6 @@
     </div>
 </div>
 
-<script src="../static/js/signin_logic.js"></script>
+<script src="../static/js/signup_logic.js"></script>
 </body>
 </html>
