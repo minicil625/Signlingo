@@ -1,48 +1,6 @@
-/* Design System Variables */
-:root {
-    /* Core Brand Colors */
-    --primary: #00C2CB;        /* Electric Aqua */
-    --secondary: #FF6F61;      /* Coral Pink */
-    --accent: #A6E22E;         /* Lime Green */
-    --neutral-dark: #2D2D2D;   /* Charcoal */
-    --neutral-light: #FAFAFA;  /* Soft White */
-    
-    /* Extended Palette */
-    --white: #FFFFFF;
-    --border: #E8E8E8;
-    --card-shadow: rgba(0, 0, 0, 0.08);
-    --hover-shadow: rgba(0, 0, 0, 0.12);
-    --gold: #FFD700;
-    --bronze: #CD7F32;
-    
-    /* Spacing Scale (8pt system) */
-    --space-xs: 4px;
-    --space-s: 8px;
-    --space-m: 16px;
-    --space-l: 24px;
-    --space-xl: 32px;
-    --space-xxl: 48px;
-    
-    /* Sidebar */
-    --sidebar-width: 240px;
-}
-
-/* Typography */
-body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background-color: var(--neutral-light);
-    color: var(--neutral-dark);
-    margin: 0;
-    padding: 0;
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Poppins', sans-serif;
-    margin: 0;
-}
-
+/* ============================================= */
+/* Home Page: Typography                         */
+/* ============================================= */
 .hero-title {
     font-size: 48px;
     font-weight: 700;
@@ -94,157 +52,23 @@ h1, h2, h3, h4, h5, h6 {
     color: rgba(255, 255, 255, 0.9);
 }
 
-/* Sidebar Navigation */
-.sidebar {
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: var(--sidebar-width);
-    height: 100vh;
-    background-color: var(--white);
-    box-shadow: 4px 0 12px var(--card-shadow);
-    display: flex;
-    flex-direction: column;
-    z-index: 1000;
-    padding: var(--space-l);
-    transition: all 0.3s ease;
-}
-
-.sidebar-header {
-    margin-bottom: var(--space-xxl);
-}
-
-.sidebar-brand {
-    font-family: 'Poppins', sans-serif;
-    font-size: 24px;
-    font-weight: 700;
-    color: var(--primary);
-    text-decoration: none;
-    display: block;
-}
-
-.sidebar-menu {
-    flex: 1;
-}
-
-.sidebar-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-m);
-    padding: 12px var(--space-m);
-    margin-bottom: var(--space-s);
-    border-radius: 8px;
-    color: var(--neutral-dark);
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    white-space: nowrap;
-}
-
-.sidebar-link i {
-    font-size: 20px;
-    width: 24px;
-    text-align: center;
-}
-
-.sidebar-link:hover {
-    background-color: var(--neutral-light);
-    color: var(--primary);
-    transform: translateX(4px);
-}
-
-.sidebar-link.active {
-    background: linear-gradient(135deg, var(--primary), #00A8B0);
-    color: var(--white);
-}
-
-.sidebar-footer {
-    padding-top: var(--space-l);
-    border-top: 1px solid var(--border);
-    position: relative;
-}
-
-/* NEW footer styles for desktop */
-.profile-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-m);
-    padding: 12px var(--space-m);
-    margin-bottom: var(--space-s);
-    border-radius: 8px;
-    color: var(--neutral-dark);
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.profile-link:hover {
-    background-color: var(--neutral-light);
-    transform: translateX(4px);
-}
-
-.profile-circle-sidebar {
-    width: 40px;
-    height: 40px;
-    background: linear-gradient(135deg, var(--secondary), #FF8A80);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--white);
-    font-weight: 600;
-    font-size: 14px;
-    flex-shrink: 0;
-}
-
-.logout-link {
-    display: flex;
-    align-items: center;
-    gap: var(--space-m);
-    padding: 12px var(--space-m);
-    border-radius: 8px;
-    color: #EF4444;
-    text-decoration: none;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.logout-link:hover {
-    background-color: #FEE2E2;
-    transform: translateX(4px);
-}
-
-.logout-link i {
-    font-size: 20px;
-    width: 24px;
-    text-align: center;
-    flex-shrink: 0;
-}
-
-/* Mobile dropup menu styles (initially hidden) */
-.more-options-button, .dropup-menu {
-    display: none;
-}
-
-
-/* Main Content */
-.main-content {
-    margin-left: var(--sidebar-width);
-    min-height: 100vh;
-    transition: margin-left 0.3s ease;
-}
-
-/* Welcome Section */
+/* ============================================= */
+/* Home Page: Layout & Sections                  */
+/* ============================================= */
 .welcome-section h1 {
     font-size: 32px;
 }
 
-/* Content Wrapper */
-.content-wrapper {
-    padding: var(--space-l) var(--space-xl) var(--space-xxl);
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--space-l);
 }
+
+/* ============================================= */
+/* Home Page: Components & Cards                 */
+/* ============================================= */
 
 /* Hero Card */
 .hero-card {
@@ -366,14 +190,6 @@ h1, h2, h3, h4, h5, h6 {
 .stat-label {
     font-size: 14px;
     color: #6B7280;
-}
-
-/* Section Header */
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-l);
 }
 
 /* Module Cards */
@@ -643,7 +459,6 @@ h1, h2, h3, h4, h5, h6 {
 .rank-badge {
     width: 50px;
     height: 50px;
-    background: linear-gradient(135deg, var(--bronze), #B8860B);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -652,6 +467,24 @@ h1, h2, h3, h4, h5, h6 {
     font-size: 24px;
     flex-shrink: 0;
 }
+
+/* Add league-based colors */
+.rank-badge.bronze {
+    background: linear-gradient(135deg, var(--bronze), #B8860B);
+}
+
+.rank-badge.silver {
+    background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+}
+
+.rank-badge.gold {
+    background: linear-gradient(135deg, var(--gold), #FFA500);
+}
+
+.rank-badge.diamond {
+    background: linear-gradient(135deg, #00CED1, #4169E1);
+}
+
 
 .rank-league {
     font-family: 'Poppins', sans-serif;
@@ -711,8 +544,9 @@ h1, h2, h3, h4, h5, h6 {
     font-weight: 500;
 }
 
-
-/* Responsive Design */
+/* ============================================= */
+/* Home Page: Responsive Styles                  */
+/* ============================================= */
 @media (max-width: 992px) {
     .hero-content {
         max-width: 60%;
@@ -720,64 +554,6 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 @media (max-width: 768px) {
-    body {
-        padding-bottom: 70px; /* Space for the bottom nav */
-    }
-
-    .sidebar {
-        flex-direction: row;
-        justify-content: space-evenly;
-        align-items: center;
-        width: 100%;
-        height: 70px;
-        top: auto;
-        bottom: 0;
-        padding: 0;
-        box-shadow: 0 -4px 12px var(--card-shadow);
-    }
-
-    .sidebar-header, .sidebar-footer {
-        display: none;
-    }
-    
-    .sidebar-menu {
-        display: flex;
-        justify-content: space-evenly;
-        align-items: center;
-        width: 100%;
-        height: 100%;
-        flex: 1;
-        gap: 0;
-    }
-
-    .sidebar-link, .more-options-button {
-        flex: 1; /* Makes all items take equal space */
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        gap: var(--space-xs);
-        padding: var(--space-s) 0;
-        margin-bottom: 0;
-        height: 100%;
-    }
-
-    .sidebar-link:hover {
-        transform: none;
-        background-color: transparent;
-    }
-    
-    .sidebar-link span {
-        display: none; /* HIDE names for main nav items on mobile */
-    }
-
-    .main-content {
-        margin-left: 0;
-    }
-    
-    .content-wrapper {
-        padding: var(--space-l) var(--space-m);
-    }
-    
     .welcome-section h1 {
         font-size: 24px;
     }
@@ -785,82 +561,18 @@ h1, h2, h3, h4, h5, h6 {
     .hero-content {
         max-width: 100%;
     }
-
-    /* Dropup Menu Styles */
-    .more-options-button {
-        display: flex;
-        color: var(--neutral-dark);
-        cursor: pointer;
-        background: none;
-        border: none;
-    }
-    
-    .more-options-button i { 
-        font-size: 20px; 
-    }
-    
-    .dropup-menu {
-        position: fixed; /* Position relative to viewport */
-        bottom: 80px; /* Position above the navbar */
-        right: 10px;
-        background-color: var(--white);
-        border-radius: 12px;
-        box-shadow: 0 -4px 20px var(--hover-shadow);
-        padding: var(--space-s);
-        z-index: 1100;
-        display: none; /* Hidden by default */
-        flex-direction: column;
-        gap: var(--space-xs);
-    }
-
-    .dropup-menu.show {
-        display: flex;
-    }
-
-    .dropup-menu a {
-        display: flex;
-        align-items: center;
-        gap: var(--space-m);
-        padding: 12px 16px;
-        border-radius: 8px;
-        color: var(--neutral-dark);
-        text-decoration: none;
-        white-space: nowrap;
-    }
-
-    .dropup-menu a i {
-        font-size: 18px;
-        width: 20px;
-    }
-    
-    .dropup-menu a:hover {
-        background-color: var(--neutral-light);
-    }
-
-    .dropup-menu a.logout-link-mobile {
-        color: #EF4444;
-    }
-    
-    .dropup-menu a.logout-link-mobile:hover {
-        background-color: #FEE2E2;
-    }
 }
 
 @media (max-width: 576px) {
     .main-content {
         margin-bottom: 70px; /* Ensure content doesn't hide behind nav */
     }
-    .content-wrapper {
-        padding: var(--space-m);
-    }
     .hero-title {
         font-size: 28px;
     }
-
     .section-title {
         font-size: 24px;
     }
-
     .subheading {
         font-size: 18px;
     }

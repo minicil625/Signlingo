@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="static/css/global_style.css">
     <link rel="stylesheet" href="static/css/home_style.css">
 </head>
 <body>
@@ -68,6 +69,22 @@
         </a>
     </div>
 
+    {% macro ordinal(n) -%}
+        {%- set n = n|int -%}
+        {%- set last = n % 10 -%}
+        {%- set last_two = n % 100 -%}
+        {%- if 11 <= last_two <= 13 -%}
+            #{{ n }}th
+        {%- elif last == 1 -%}
+            #{{ n }}st
+        {%- elif last == 2 -%}
+            #{{ n }}nd
+        {%- elif last == 3 -%}
+            #{{ n }}rd
+        {%- else -%}
+            #{{ n }}th
+        {%- endif -%}
+    {%- endmacro %}
 
     <div class="main-content">
          <div class="content-wrapper">
@@ -102,9 +119,6 @@
 
                     <div class="section-header">
                         <h3 class="subheading">All modules</h3>
-                        <button class="icon-button">
-                            <i class="fas fa-filter"></i>
-                        </button>
                     </div>
 
                     <div class="module-card">
@@ -159,7 +173,7 @@
                             <i class="fas fa-star summary-icon"></i>
                             <div>
                                 <div class="summary-label">Total XP</div>
-                                <div class="summary-value">0 XP</div>
+                                <div class="summary-value">{{user_points}} XP</div>
                             </div>
                         </div>
                         <div class="summary-item">
@@ -220,12 +234,14 @@
                             <h3 class="subheading">Your League</h3>
                         </div>
                         <div class="rank-content">
-                            <div class="rank-badge">
+                            <div class="rank-badge {{ user_league|lower }}">
                                 <i class="fas fa-medal"></i>
                             </div>
                             <div class="rank-info">
                                 <div class="rank-league">{{ user_league }} league</div>
-                                <div class="rank-position">#1st · {{user_points}} XP</div>
+                                <div class="rank-position rank-{{ user_rank }}">
+                                    {{ ordinal(user_rank) }} · {{ user_points }} XP
+                                </div>
                             </div>
                         </div>
                     </div>
