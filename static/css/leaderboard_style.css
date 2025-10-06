@@ -228,7 +228,7 @@
 .player-points {
     display: flex;
     align-items: flex-end;
-    gap: 4px;
+    gap: 2px;
     text-align: right;
 }
 
