@@ -25,19 +25,13 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of your application's code
 COPY . .
 
-# --- NEW CHANGES START HERE ---
-
-# Copy the entrypoint script into the container
-COPY entrypoint.sh .
-
-# Make the entrypoint script executable inside the container
-RUN chmod +x entrypoint.sh
-
-# Set the entrypoint to our script
-ENTRYPOINT ["./entrypoint.sh"]
+# --- NEW CHANGES ---
+# Run the database reset command ONLY during the image build process.
+RUN flask init-app
 
 # Expose the port that the app runs on
 EXPOSE 5000
 
-# The command to run your application (this is passed to the entrypoint script)
+# The command to run your application when the container starts
+# (Watches all files for changes, including HTML)
 CMD ["flask", "run"]
