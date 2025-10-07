@@ -17,6 +17,7 @@ class User(db.Model):
     password = db.Column(db.String(80), nullable=False)
     points = db.Column(db.Integer, default=0)  # Add points column
     lesson_statuses = db.relationship('UserLessonStatus', backref='user', lazy=True)
+    is_verified = db.Column(db.Boolean, default=False)
     friends = db.relationship('User',
                                secondary=friendship,
                                primaryjoin=(friendship.c.user_id == id),

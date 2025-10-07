@@ -3,11 +3,19 @@ from flask_sqlalchemy import SQLAlchemy
 from models import db
 from initialization import get_or_create_lessons_from_json, create_admin_user
 import os
+from flask_mail import Mail
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.sqlite'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['SECRET_KEY'] = 'supersecretkey'  # Required for session management
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = 'signlingolanguage@gmail.com'         # <-- your email
+app.config['MAIL_PASSWORD'] = 'frpk wyzu xdlf tyyj'      # <-- app password
+mail = Mail(app)
 
 
 # Import and register the Blueprint
