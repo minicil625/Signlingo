@@ -69,13 +69,17 @@ def dashboard():
 
     first_name,initials = get_initials(full_name)
 
+    all_users = User.query.order_by(User.points.desc()).all()
+    user_rank = next((i + 1 for i, u in enumerate(all_users) if u.id == user_id), None)
+
     return render_template("dashboard.html",
                            full_name=full_name, 
                            first_name=first_name, 
                            initials=initials,
                            login_today=login_today,
                            user_points = user.points,
-                           user_league = user.league)
+                           user_league = user.league,
+                           user_rank=user_rank)
 
 @auth_bp.route('/logout')
 def logout():
@@ -176,9 +180,16 @@ def leaderboard():
     all_users = User.query.order_by(User.points.desc()).all()
     league_users = [user for user in all_users if user.league == current_user.league]
 
+    user = User.query.get(user_id)
+
+    full_name = user.name
+
+    first_name, initials = get_initials(full_name)
+
     return render_template('leaderboard.html',
                            current_user=current_user,
                            friends_leaderboard=friends_leaderboard,
+                           initials=initials,
                            league_users=league_users,
                            league_name=current_user.league)
 

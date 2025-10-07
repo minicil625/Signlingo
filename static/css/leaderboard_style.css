@@ -1,0 +1,356 @@
+/* ============================================= */
+/* Leaderboard Page Styles                       */
+/* ============================================= */
+
+/* Page Header */
+.page-header {
+    margin-bottom: var(--space-xl);
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    margin-bottom: var(--space-s);
+}
+
+.page-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: var(--neutral-dark);
+    margin: 0;
+}
+
+.page-subtitle {
+    font-size: 18px;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Leaderboard Cards */
+.leaderboard-card {
+    background: var(--white);
+    border-radius: 16px;
+    padding: var(--space-xl);
+    box-shadow: 0 4px 12px var(--card-shadow);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.leaderboard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px var(--hover-shadow);
+}
+
+.leaderboard-header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-l);
+    border-bottom: 2px solid var(--border);
+}
+
+.header-icon-wrapper {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
+    color: var(--white);
+    flex-shrink: 0;
+}
+
+/* League-specific gradient colors based on tier */
+.header-icon-wrapper.league.league-bronze {
+    background: linear-gradient(135deg, var(--bronze), #B8860B);
+}
+
+.header-icon-wrapper.league.league-silver {
+    background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+}
+
+.header-icon-wrapper.league.league-gold {
+    background: linear-gradient(135deg, var(--gold), #FFA500);
+}
+
+.header-icon-wrapper.league.league-diamond {
+    background: linear-gradient(135deg, #00CED1, #4169E1);
+}
+
+/* Default league color (fallback) */
+.header-icon-wrapper.league {
+    background: linear-gradient(135deg, var(--bronze), #B8860B);
+}
+
+.header-icon-wrapper.friends {
+    background: linear-gradient(135deg, var(--secondary), #FF8A80);
+}
+
+.leaderboard-title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--neutral-dark);
+    margin: 0;
+}
+
+.leaderboard-subtitle {
+    font-size: 14px;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Players List */
+.players-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-s);
+}
+
+.player-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--space-m);
+    border-radius: 12px;
+    background: var(--neutral-light);
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.player-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: transparent;
+    transition: all 0.3s ease;
+}
+
+.player-card:hover {
+    transform: translateX(4px);
+    background: #F3F4F6;
+}
+
+.player-card.current-user {
+    background: linear-gradient(135deg, rgba(0, 194, 203, 0.1), rgba(0, 194, 203, 0.05));
+    border: 2px solid var(--primary);
+}
+
+.player-card.current-user::before {
+    background: var(--primary);
+}
+
+/* Player Info Section */
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: var(--space-m);
+}
+
+.player-rank {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    flex-shrink: 0;
+    background: #E5E7EB;
+    color: #6B7280;
+}
+
+/* Top 3 Rank Styling */
+.player-rank.rank-1 {
+    background: linear-gradient(135deg, var(--gold), #FFA500);
+    color: var(--white);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+.player-rank.rank-2 {
+    background: linear-gradient(135deg, #C0C0C0, #A8A8A8);
+    color: var(--white);
+}
+
+.player-rank.rank-3 {
+    background: linear-gradient(135deg, var(--bronze), #B8860B);
+    color: var(--white);
+}
+
+@keyframes pulse {
+    0%, 100% { 
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(255, 215, 0, 0.4);
+    }
+    50% { 
+        transform: scale(1.05);
+        box-shadow: 0 0 0 8px rgba(255, 215, 0, 0);
+    }
+}
+
+.player-rank i {
+    font-size: 20px;
+}
+
+.player-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--primary), #00A8B0);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Poppins', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    flex-shrink: 0;
+}
+
+.player-name {
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--neutral-dark);
+}
+
+/* Player Points Section */
+.player-points {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    text-align: right;
+}
+
+.points-value {
+    font-family: 'Poppins', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--primary);
+    line-height: 1;
+}
+
+.points-label {
+    font-size: 12px;
+    color: #6B7280;
+    font-weight: 500;
+}
+
+/* ============================================= */
+/* Responsive Styles                              */
+/* ============================================= */
+@media (max-width: 992px) {
+    .page-title {
+        font-size: 36px;
+    }
+    
+    .leaderboard-title {
+        font-size: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .page-title {
+        font-size: 32px;
+    }
+    
+    .page-subtitle {
+        font-size: 16px;
+    }
+    
+    .header-icon {
+        font-size: 32px;
+    }
+    
+    .leaderboard-card {
+        padding: var(--space-l);
+    }
+    
+    .header-icon-wrapper {
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+    
+    .leaderboard-title {
+        font-size: 22px;
+    }
+    
+    .player-card {
+        padding: var(--space-s) var(--space-m);
+    }
+}
+
+@media (max-width: 576px) {
+    .page-title {
+        font-size: 28px;
+    }
+    
+    .page-subtitle {
+        font-size: 14px;
+    }
+    
+    .header-icon {
+        font-size: 28px;
+    }
+    
+    .leaderboard-card {
+        padding: var(--space-m);
+    }
+    
+    .leaderboard-header {
+        gap: var(--space-s);
+    }
+    
+    .header-icon-wrapper {
+        width: 40px;
+        height: 40px;
+        font-size: 18px;
+    }
+    
+    .leaderboard-title {
+        font-size: 20px;
+    }
+    
+    .leaderboard-subtitle {
+        font-size: 12px;
+    }
+    
+    .player-rank {
+        width: 36px;
+        height: 36px;
+        font-size: 16px;
+    }
+    
+    .player-rank i {
+        font-size: 16px;
+    }
+    
+    .player-avatar {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+    }
+    
+    .player-name {
+        font-size: 14px;
+    }
+    
+    .points-value {
+        font-size: 20px;
+    }
+    
+    .points-label {
+        font-size: 11px;
+    }
+}
