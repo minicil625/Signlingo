@@ -1,7 +1,7 @@
 from flask import current_app
 # Adjust the import path for models if initialization.py is in a different location
 # If in the same directory as models.py:
-from models import db, Lesson
+from models import db, Lesson, User
 # If models.py is in the parent directory (e.g., project_root/models.py)
 # and initialization.py is in project_root/your_app_package/initialization.py,
 # you might need from ..models import db, Lesson, or ensure your Python path is set up.
@@ -71,3 +71,29 @@ def get_or_create_lessons_from_json():
     # If saved_lessons contains newly added items, their IDs might not be populated
     # until after commit and refresh. So re-querying is safer.
     return Lesson.query.order_by(Lesson.order).all()
+
+def create_admin_user():
+    """
+    Checks for an existing admin user and creates one if not found.
+    """
+    # Check if admin user already exists
+    admin_email = "admin@example.com"
+    user = User.query.filter_by(email=admin_email).first()
+
+    if not user:
+        # Create a new admin user if one doesn't exist
+        admin_user = User(
+            name="Admin",
+            age=99,
+            email=admin_email,
+            password="admin"  # IMPORTANT: In a real application, you must hash this password!
+        )
+        db.session.add(admin_user)
+        try:
+            db.session.commit()
+            current_app.logger.info(f"Admin user created with email: {admin_email}")
+        except Exception as e:
+            db.session.rollback()
+            current_app.logger.error(f"Failed to create admin user: {e}")
+    else:
+        current_app.logger.info(f"Admin user with email {admin_email} already exists.")
