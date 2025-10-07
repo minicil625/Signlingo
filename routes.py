@@ -2,6 +2,36 @@ from flask import Blueprint, render_template, request, redirect, url_for, sessio
 from models import Lesson, UserLessonStatus, db, User  # Import the database and User model
 import random,json
 from tertiary import get_initials, get_random_question
+from email_validator import validate_email, EmailNotValidError
+from flask_mail import Message
+from itsdangerous import URLSafeTimedSerializer
+from app import mail, app  # to use app config + mail instance
+import time
+from smtplib import SMTPException
+
+def safe_send_email(msg, retries=3, delay=3):
+    """Send email with retry logic to handle intermittent network issues."""
+    for attempt in range(1, retries + 1):
+        try:
+            mail.send(msg)
+            return True
+        except (OSError, SMTPException) as e:
+            if attempt < retries:
+                time.sleep(delay)
+            else:
+                return False
+
+s = URLSafeTimedSerializer(app.secret_key)
+
+def generate_token(email):
+    return s.dumps(email, salt='email-confirm')
+
+def confirm_token(token, expiration=300):
+    try:
+        email = s.loads(token, salt='email-confirm', max_age=expiration)
+    except Exception:
+        return None
+    return email
 
 auth_bp = Blueprint('auth', __name__)  # Define the Blueprint
 
@@ -25,16 +55,54 @@ def register():
         email = request.form.get('email')
         password = request.form.get('password')
 
+        try:
+            # Validate and normalize email
+            valid = validate_email(email, check_deliverability=True)
+            email = valid.email  # normalized email (e.g. lowercase domain)
+
+        except EmailNotValidError as e:
+            # The email is not valid
+            error_message = str(e)
+            return render_template('SignUp.html', error=error_message)
+
         if User.query.filter_by(email=email).first():
             error_message = "Email already exists."
             return render_template('sign_up.html', error=error_message)
 
         new_user = User(age=age, name=name, email=email, password=password)
+        new_user.is_verified = False
         db.session.add(new_user)
         db.session.commit()
+
+        token = generate_token(email)
+        verify_url = url_for('auth.verify_email', token=token, _external=True)
+        msg = Message('Verify your email for SignLingo', sender=app.config['MAIL_USERNAME'], recipients=[email])
+        msg.body = f"Hi {name}, please verify your email by clicking this link: {verify_url}"
+        
+        if safe_send_email(msg):
+            flash("Verification email sent! Please check your inbox.")
+        else:
+            flash("Registered successfully, but we couldn’t send the verification email. Please try again later.")
+
+
+
         return redirect(url_for('auth.login'))
 
     return render_template('sign_up.html')
+
+@auth_bp.route('/verify/<token>')
+def verify_email(token):
+    email = confirm_token(token)
+    if not email:
+        return "Invalid or expired verification link."
+
+    user = User.query.filter_by(email=email).first()
+    if not user:
+        return "User not found."
+
+    user.is_verified = True
+    db.session.commit()
+    return redirect(url_for('auth.login'))
 
 @auth_bp.route('/login', methods=['GET', 'POST'])
 def login():
@@ -44,10 +112,24 @@ def login():
         password = request.form['password']
 
         user = User.query.filter_by(email=email, password=password).first()
+
         if user:
-            session['user'] = email
-            session['user_id'] = user.id 
-            return redirect(url_for('auth.dashboard'))
+            if user.is_verified:
+                session['user'] = email
+                session['user_id'] = user.id 
+                return redirect(url_for('auth.dashboard'))
+            else:
+                error_message =  "Account is not verified, please check your inbox and finish verification."
+
+                token = generate_token(email)
+
+                verify_url = url_for('auth.verify_email', token=token, _external=True)
+                msg = Message('Verify your email for SignLingo', sender=app.config['MAIL_USERNAME'], recipients=[email])
+                msg.body = f"Hi {user.name}, please verify your email by clicking this link: {verify_url}"
+                
+                safe_send_email(msg)
+
+                return render_template('login.html', error=error_message)
         else:
             error_message =  "Invalid credentials."
             return render_template('login.html', error=error_message)
@@ -104,10 +186,10 @@ def forgot_password():
             token = generate_reset_token()
             reset_tokens[token] = user.email # Store token with user's email
 
-            print(f"\n------------- PASSWORD RESET TOKEN ----------------")
-            print(f"DEBUG: Password reset token for {user.email}: {token}")
-            print(f"DEBUG: Reset URL: {url_for('auth.reset_password', token=token, _external=True)}")
-            print(f"------------- PASSWORD RESET TOKEN ----------------\n")
+            msg = Message('Password Reset Token', sender=app.config['MAIL_USERNAME'], recipients=[email])
+            msg.body = f"DEBUG: Password reset token for {user.email}: {token} \n DEBUG: Reset URL: {url_for('auth.reset_password', token=token, _external=True)}"
+            safe_send_email(msg)
+
             flash(f'If an account with {email} exists, a password reset link has been (simulated) sent. Please check your (console/email) for the link.', 'success')
         else:
             flash(f'If an account with {email} exists, a password reset link has been (simulated) sent.', 'success') # Generic message for security
