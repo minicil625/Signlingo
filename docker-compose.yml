@@ -1,11 +1,11 @@
 version: '3.8'
-
 services:
   web:
     build: .
     ports:
       - "5001:5000"
-    environment:
-      # You can add environment variables here if needed
-      # e.g., FLASK_DEBUG=1 for development
-      - FLASK_ENV=development
+    volumes:
+      # This new line syncs all your project files
+      - .:/app 
+      # This line already persists your SQLite database
+      - ./instance:/app/instance
