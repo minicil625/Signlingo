@@ -6,6 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV FLASK_APP=app.py
 ENV FLASK_RUN_HOST=0.0.0.0
+ENV FLASK_DEBUG=1
 
 # Set the working directory inside the container
 WORKDIR /app
@@ -34,4 +35,4 @@ EXPOSE 5000
 
 # The command to run your application when the container starts
 # (Watches all files for changes, including HTML)
-CMD ["flask", "run"]
+CMD ["flask", "run", "--extra-files", "templates/:static/"]
