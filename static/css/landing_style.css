@@ -49,6 +49,30 @@ header {
     color: #00C2CB;
 }
 
+.nav-buttons {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.btn-login {
+    background: linear-gradient(135deg, #FF6F61 0%, #E65A50 100%);
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 50px;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-family: 'Inter', sans-serif;
+}
+
+.btn-login:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 16px rgba(255, 111, 97, 0.4);
+}
+
 /* Buttons */
 .btn-primary {
     background: #00C2CB;
@@ -483,6 +507,16 @@ footer p {
 @media (max-width: 768px) {
     .hero-content {
         padding: 0 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .btn-nav {
+        font-size: 12px;
+    }
+
+    .nav-buttons {
+        gap: 8px;
     }
 }
 

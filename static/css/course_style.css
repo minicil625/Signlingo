@@ -198,6 +198,26 @@
     box-shadow: none;
 }
 
+.flag-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flag-image {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.2));
+    animation: flagWave 6s ease-in-out infinite;
+    border-radius: 8px;
+}
+
+@keyframes flagWave {
+    0%, 100% { transform: rotate(-2deg) scale(1); }
+    50% { transform: rotate(2deg) scale(1.05); }
+}
+
 /* ============================================= */
 /* Course Page: Responsive Styles                */
 /* ============================================= */

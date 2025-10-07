@@ -26,21 +26,9 @@
                 <i class="fas fa-book"></i>
                 <span>Courses</span>
             </a>
-            <a class="sidebar-link" href="/daily-quiz">
-                <i class="fas fa-clipboard-list"></i>
-                <span>Daily Quiz</span>
-            </a>
             <a class="sidebar-link" href="/leaderboard">
                 <i class="fas fa-trophy"></i>
                 <span>Leaderboard</span>
-            </a>
-            <a class="sidebar-link" href="/shop">
-                <i class="fas fa-shopping-bag"></i>
-                <span>Shop</span>
-            </a>
-            <a class="sidebar-link" href="/premium">
-                <i class="fas fa-crown"></i>
-                <span>Premium</span>
             </a>
             <button class="more-options-button" id="moreOptionsButton">
                 <i class="fas fa-ellipsis-h"></i>
@@ -71,25 +59,21 @@
 
 
     <div class="main-content" id="mainContent">
-         <div class="content-wrapper">
+        <div class="content-wrapper">
             <div class="page-header">
                 <h1 class="page-title">Explore Courses</h1>
                 <p class="page-subtitle">Learn sign language at your own pace with our comprehensive courses</p>
             </div>
 
             <div class="section-header">
-                <h2 class="section-title">
-                    Available Now
-                </h2>
+                <h2 class="section-title">Available Now</h2>
             </div>
             
             <div class="course-grid">
                 <div class="course-card">
                     <div class="course-visual course-visual-available">
-                        <div class="hand-signs">
-                            <div class="hand-icon">✊</div>
-                            <div class="hand-icon">✋</div>
-                            <div class="hand-icon">👌</div>
+                        <div class="flag-container">
+                            <img src="../static/Assets/Indonesia.png" alt="Indonesia Flag" class="flag-image">
                         </div>
                     </div>
                     <div class="course-content">
@@ -102,13 +86,14 @@
                             <div class="difficulty-badges">
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge active"></div>
-                                <div class="difficulty-badge active"></div>
+                                <div class="difficulty-badge"></div>
+                                <div class="difficulty-badge"></div>
                                 <div class="difficulty-badge"></div>
                             </div>
                             <div class="course-stats">
                                 <span class="course-stat">
                                     <i class="fas fa-clock"></i>
-                                    2-3 weeks
+                                    16–20 weeks
                                 </span>
                             </div>
                         </div>
@@ -116,7 +101,7 @@
                             <i class="fas fa-users"></i>
                             <span><strong>1,247</strong> learners currently enrolled</span>
                         </div>
-                        <button class="learn-button" onclick="window.location.href='/video_learning'">
+                        <button class="learn-button" onclick="alert('Starting course...')">
                             Start Learning
                             <i class="fas fa-arrow-right"></i>
                         </button>
@@ -125,18 +110,14 @@
             </div>
 
             <div class="section-header">
-                <h2 class="section-title">
-                    Coming Soon
-                </h2>
+                <h2 class="section-title">Coming Soon</h2>
             </div>
             
             <div class="course-grid">
                 <div class="course-card">
                     <div class="course-visual course-visual-coming">
-                        <div class="hand-signs">
-                            <div class="hand-icon">✊</div>
-                            <div class="hand-icon">✋</div>
-                            <div class="hand-icon">🤙</div>
+                        <div class="flag-container">
+                            <img src="../static/Assets/America.png" alt="USA Flag" class="flag-image">
                         </div>
                     </div>
                     <div class="course-content">
@@ -150,12 +131,13 @@
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge active"></div>
+                                <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge"></div>
                             </div>
                             <div class="course-stats">
                                 <span class="course-stat">
                                     <i class="fas fa-clock"></i>
-                                    3-4 weeks
+                                    24–30 weeks
                                 </span>
                             </div>
                         </div>
@@ -172,10 +154,8 @@
 
                 <div class="course-card">
                     <div class="course-visual course-visual-coming">
-                        <div class="hand-signs">
-                            <div class="hand-icon">👋</div>
-                            <div class="hand-icon">🤝</div>
-                            <div class="hand-icon">✌️</div>
+                        <div class="flag-container">
+                            <img src="../static/Assets/British.png" alt="UK Flag" class="flag-image">
                         </div>
                     </div>
                     <div class="course-content">
@@ -189,12 +169,13 @@
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge active"></div>
-                                <div class="difficulty-badge"></div>
+                                <div class="difficulty-badge active"></div>
+                                <div class="difficulty-badge active"></div>
                             </div>
                             <div class="course-stats">
                                 <span class="course-stat">
                                     <i class="fas fa-clock"></i>
-                                    3-4 weeks
+                                    70–80 weeks
                                 </span>
                             </div>
                         </div>
@@ -211,10 +192,8 @@
 
                 <div class="course-card">
                     <div class="course-visual course-visual-coming">
-                        <div class="hand-signs">
-                            <div class="hand-icon">🙏</div>
-                            <div class="hand-icon">👐</div>
-                            <div class="hand-icon">🤲</div>
+                        <div class="flag-container">
+                            <img src="../static/Assets/France.png" alt="France Flag" class="flag-image">
                         </div>
                     </div>
                     <div class="course-content">
@@ -229,11 +208,12 @@
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge"></div>
+                                <div class="difficulty-badge"></div>
                             </div>
                             <div class="course-stats">
                                 <span class="course-stat">
                                     <i class="fas fa-clock"></i>
-                                    3-4 weeks
+                                    20–24 weeks
                                 </span>
                             </div>
                         </div>
@@ -250,10 +230,8 @@
 
                 <div class="course-card">
                     <div class="course-visual course-visual-coming">
-                        <div class="hand-signs">
-                            <div class="hand-icon">🤞</div>
-                            <div class="hand-icon">👆</div>
-                            <div class="hand-icon">🖐️</div>
+                        <div class="flag-container">
+                            <img src="../static/Assets/China.png" alt="China Flag" class="flag-image">
                         </div>
                     </div>
                     <div class="course-content">
@@ -268,11 +246,12 @@
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge active"></div>
                                 <div class="difficulty-badge active"></div>
+                                <div class="difficulty-badge"></div>
                             </div>
                             <div class="course-stats">
                                 <span class="course-stat">
                                     <i class="fas fa-clock"></i>
-                                    4-5 weeks
+                                    30–36 weeks
                                 </span>
                             </div>
                         </div>
