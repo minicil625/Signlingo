@@ -1,5 +1,6 @@
 let correctAnswer = '';
 let questionsAsked = 0;
+let correctAnswersCount = 0; // Added to track score
 const TOTAL_QUESTIONS = 10;
 
 const correctSound = document.getElementById('correct-sound');
@@ -8,8 +9,39 @@ const incorrectSound = document.getElementById('incorrect-sound');
 function playSound(soundElement) {
     if (soundElement) {
         soundElement.currentTime = 0; // Rewind to the start
-        soundElement.play().catch(error => console.error("Error playing sound:", error)); // Play and catch potential errors
+        soundElement.play().catch(error => console.error("Error playing sound:", error));
     }
+}
+
+function showLoadingState(isLoading) {
+    const spinner = document.getElementById('loading-spinner');
+    const image = document.getElementById('sign-image');
+    if (isLoading) {
+        spinner.style.display = 'block';
+        image.style.display = 'none';
+    } else {
+        spinner.style.display = 'none';
+        image.style.display = 'block';
+    }
+}
+
+function showFeedbackBanner(isCorrect, correctAns) {
+    const banner = document.getElementById('feedback-banner');
+    const feedbackText = document.getElementById('feedback');
+    
+    banner.classList.remove('correct', 'incorrect');
+    if (isCorrect) {
+        banner.classList.add('correct');
+        feedbackText.innerText = 'Great job!';
+    } else {
+        banner.classList.add('incorrect');
+        feedbackText.innerText = `Correct answer: ${correctAns}`;
+    }
+    banner.classList.add('show');
+}
+
+function hideFeedbackBanner() {
+    document.getElementById('feedback-banner').classList.remove('show');
 }
 
 async function loadQuestion() {
@@ -20,54 +52,46 @@ async function loadQuestion() {
         return; 
     }
 
+    showLoadingState(true);
+    hideFeedbackBanner();
+
     try {
         const res = await fetch('/get-question');
         if (!res.ok) {
-            console.error("Failed to fetch question. Status:", res.status);
-            let errorMsg = 'Error loading question.';
-            if (res.status === 401) {
-                errorMsg += ' Please ensure you are logged in.';
-            } else {
-                const serverError = await res.text();
-                errorMsg += ` Server responded with: ${res.status}. ${serverError}`;
-            }
-            document.getElementById('question').innerText = errorMsg;
-            document.getElementById('choices').innerHTML = ''; 
-            return; 
+            throw new Error(`Failed to fetch question. Status: ${res.status}`);
         }
         const data = await res.json();
 
         correctAnswer = data.answer;
         document.getElementById('question').innerText = data.question;
-        document.getElementById('sign-image').src = data.image || '/static/placeholder.png';
+        
+        const signImage = document.getElementById('sign-image');
+        signImage.onload = () => showLoadingState(false);
+        signImage.src = data.image || '/static/placeholder.png';
 
         const choicesDiv = document.getElementById('choices');
         choicesDiv.innerHTML = ''; 
         data.choices.forEach(choice => {
-            const btn = document.createElement('div');
+            const btn = document.createElement('button');
             btn.className = 'option-button';
             btn.innerText = choice;
             btn.onclick = () => checkAnswer(choice, btn); 
             choicesDiv.appendChild(btn);
         });
 
-        document.getElementById('feedback').innerText = ''; 
         questionsAsked++;
         updateProgress();
 
     } catch (error) {
-        console.error("Error in loadQuestion fetch or processing:", error);
-        document.getElementById('question').innerText = 'Could not load question due to a network or script error.';
-        document.getElementById('choices').innerHTML = '';
+        console.error("Error in loadQuestion:", error);
+        document.getElementById('question').innerText = 'Could not load question. Please try refreshing.';
+        showLoadingState(false);
     }
 }
 
 async function checkAnswer(selected, buttonElement) {
     const options = document.querySelectorAll('.option-button');
-    options.forEach(opt => {
-        opt.style.pointerEvents = 'none';
-        opt.style.opacity = '0.6';
-    });
+    options.forEach(opt => opt.disabled = true);
 
     try {
         const res = await fetch('/check-answer', {
@@ -75,99 +99,104 @@ async function checkAnswer(selected, buttonElement) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ selected: selected, correct: correctAnswer })
         });
+        if (!res.ok) throw new Error('Failed to check answer.');
 
-        if (!res.ok) {
-            console.error("Failed to check answer. Status:", res.status);
-            document.getElementById('feedback').innerText = 'Error checking answer. Please try again.';
-            options.forEach(opt => {
-                opt.style.pointerEvents = 'auto';
-                opt.style.opacity = '1';
-            });
-            return;
-        }
         const result = await res.json();
 
-        document.getElementById('feedback').innerText = result.result ? '✅ Correct!' : `❌ Wrong!`;
+        showFeedbackBanner(result.result, correctAnswer);
 
-        // Highlight correct/incorrect and PLAY SOUNDS
         if (result.result) {
-            buttonElement.style.background = 'var(--correct)';
-            buttonElement.style.color = '#fff';
-            playSound(correctSound); // *** Play correct sound ***
+            correctAnswersCount++; // Increment score if correct
+            buttonElement.style.background = 'var(--correct-bg)';
+            buttonElement.style.borderColor = 'var(--correct-text)';
+            playSound(correctSound);
         } else {
-            buttonElement.style.background = 'var(--incorrect)';
-            buttonElement.style.color = '#fff';
-            playSound(incorrectSound); // *** Play incorrect sound ***
+            buttonElement.style.background = 'var(--incorrect-bg)';
+            buttonElement.style.borderColor = 'var(--incorrect-text)';
+            playSound(incorrectSound);
             options.forEach(opt => {
                 if (opt.innerText === correctAnswer) {
+                    opt.style.background = 'var(--correct-bg)';
+                    opt.style.borderColor = 'var(--correct-text)';
                 }
             });
         }
 
-        setTimeout(loadQuestion, 1500);
+        setTimeout(loadQuestion, 2000);
 
     } catch (error) {
-        console.error("Error in checkAnswer fetch or processing:", error);
-        document.getElementById('feedback').innerText = 'Could not check answer due to a network or script error.';
-        options.forEach(opt => {
-            opt.style.pointerEvents = 'auto';
-            opt.style.opacity = '1';
-        });
+        console.error("Error in checkAnswer:", error);
+        alert('Could not check answer due to a network error.');
+        options.forEach(opt => opt.disabled = false);
     }
 }
 
 function updateProgress() {
     const percent = (questionsAsked / TOTAL_QUESTIONS) * 100;
-    const progressBarFill = document.getElementById('progress-bar');
-    if (progressBarFill) {
-        progressBarFill.style.width = percent + '%';
-    }
+    document.getElementById('progress-bar').style.width = percent + '%';
 }
 
 async function quizCompleted(lessonKeyForThisQuiz) {
-    document.getElementById('question').innerText = '🎉 Quiz Complete!';
-    document.getElementById('choices').innerHTML = '';
-    document.getElementById('sign-image').src = '/static/Assets/great_job.png';
-    document.getElementById('feedback').innerText = 'Saving progress...';
+    // Hide the image/visual area
+    document.querySelector('.quiz-visual-area').style.display = 'none';
+    
+    // Set completion text
+    document.getElementById('question').innerText = 'Quiz Complete!';
+    document.getElementById('question').classList.add('quiz-complete-title');
 
+    // Calculate stats
+    const xpGained = correctAnswersCount * 10;
+    const accuracy = (correctAnswersCount / TOTAL_QUESTIONS) * 100;
 
-    if (!lessonKeyForThisQuiz) {
-        console.error("Lesson key is missing, cannot save quiz completion status.");
-        document.getElementById('feedback').innerText = 'Quiz complete! Status not saved (no lesson key).';
+    // Display the new, better-designed results
+    const choicesDiv = document.getElementById('choices');
+    choicesDiv.innerHTML = `
+        <div class="results-grid">
+            <div class="result-card">
+                <div class="result-card-icon accuracy-icon">
+                    <i class="fa-solid fa-bullseye"></i>
+                </div>
+                <span class="result-card-value">${accuracy.toFixed(0)}%</span>
+                <span class="result-card-label">Accuracy</span>
+            </div>
+            <div class="result-card">
+                <div class="result-card-icon xp-icon">
+                    <i class="fa-solid fa-star"></i>
+                </div>
+                <span class="result-card-value">+${xpGained}</span>
+                <span class="result-card-label">Total XP</span>
+            </div>
+        </div>
+    `;
+
+    showFeedbackBanner(true);
+
+    if (!lessonKeyForThisQuiz || lessonKeyForThisQuiz === 'KEY_NOT_FOUND') {
+        console.error("Lesson key is missing. Cannot save progress.");
+        document.getElementById('feedback').innerText = 'Quiz complete! Could not save progress (no lesson key).';
         return;
     }
 
     try {
         const response = await fetch('/mark-lesson-status', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                lesson_key: lessonKeyForThisQuiz,
-                status: 'completed'
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ lesson_key: lessonKeyForThisQuiz, status: 'completed' })
         });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({ error: 'Server error, unable to parse details.' }));
-            console.error('Failed to mark lesson status. Status:', response.status, 'Error:', errorData.error);
-            document.getElementById('feedback').innerText = `Quiz complete, but progress could not be saved: ${errorData.error || response.statusText}.`;
-            return; 
-        }
+        if (!response.ok) throw new Error('Server responded with an error.');
 
         const result = await response.json();
         if (result.success) {
-            console.log('Quiz status updated successfully.');
-            document.getElementById('feedback').innerText = 'Quiz complete and progress saved!';
-            setTimeout(() => window.location.reload(), 1500); 
+            document.getElementById('feedback').innerText = 'Progress saved! Moving on...';
+            setTimeout(() => {
+                window.location.href = '/ml_game';
+            }, 2500);
         } else {
-            console.error('Failed to update quiz status (server indicated failure):', result.error);
-            document.getElementById('feedback').innerText = `Quiz complete, but progress could not be saved: ${result.error || 'Unknown reason'}.`;
+            throw new Error(result.error || 'Unknown server error');
         }
     } catch (error) {
-        console.error('Error sending quiz completion status:', error);
-        document.getElementById('feedback').innerText = 'Quiz complete, but an error occurred while saving progress.';
+        console.error('Error saving quiz completion status:', error);
+        document.getElementById('feedback').innerText = `Quiz complete, but an error occurred while saving progress.`;
     }
 }
 
