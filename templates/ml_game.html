@@ -24,7 +24,7 @@
             
             <div class="game-header">
                 <div class="header-text">
-                    <span class="module-badge">ML PRACTICE</span>
+                    <span class="module-badge">PRACTICE</span>
                     <h1>{{ temp_lesson.title if temp_lesson else "Live Practice" }}</h1>
                 </div>
                 <div class="progress-info">
@@ -67,6 +67,29 @@
                 <i class="fa-solid fa-circle-xmark"></i>
             </span>
             <p id="feedback" class="feedback-text"></p>
+        </div>
+    </div>
+
+    <audio id="correct-sound" src="{{ url_for('static', filename='sounds/correct.mp3') }}" preload="auto"></audio>
+    <audio id="incorrect-sound" src="{{ url_for('static', filename='sounds/incorrect.mp3') }}" preload="auto"></audio>
+
+    <button class="skip-button" id="skip-button">
+        <i class="fa-solid fa-forward"></i>
+        Skip Practice
+    </button>
+
+    <!-- Skip Confirmation Modal -->
+    <div class="modal-overlay" id="skip-modal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h3 class="modal-title">Skip this practice?</h3>
+            <p class="modal-text">You won't earn any XP if you skip. Are you sure you want to continue?</p>
+            <div class="modal-actions">
+                <button class="modal-button cancel-button" id="cancel-skip">Cancel</button>
+                <button class="modal-button confirm-button" id="confirm-skip">Skip Practice</button>
+            </div>
         </div>
     </div>
     

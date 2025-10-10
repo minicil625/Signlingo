@@ -30,14 +30,25 @@
                 <i class="fas fa-trophy"></i>
                 <span>Leaderboard</span>
             </a>
+            <a class="sidebar-link" href="/shop">
+                <i class="fas fa-shopping-bag"></i>
+                <span>Shop</span>
+            </a>
+            <a class="sidebar-link" href="/premium">
+                <i class="fas fa-crown"></i>
+                <span>Premium</span>
+            </a>
             <button class="more-options-button" id="moreOptionsButton">
                 <i class="fas fa-ellipsis-h"></i>
             </button>
         </div>
         <div class="sidebar-footer">
-            <a class="profile-link" href="/edit-account">
+            <a class="profile-link" href="/edit-account" id="profileLink">
                 <div class="profile-circle-sidebar">{{ initials }}</div>
-                <span>Profile</span>
+                <div class="profile-info">
+                    <span id="profileName">{{ full_name }}</span>
+                    <span class="profile-id">@ab93f1x</span>
+                </div>
             </a>
             <a class="logout-link" href="/logout">
                 <i class="fas fa-sign-out-alt"></i>
@@ -49,7 +60,7 @@
     <div class="dropup-menu" id="dropupMenu">
         <a href="/edit-account">
             <i class="fas fa-user-circle"></i>
-            <span>Profile</span>
+            <span id="profileName">{{ full_name }}</span>
         </a>
         <a href="/logout" class="logout-link-mobile">
             <i class="fas fa-sign-out-alt"></i>
