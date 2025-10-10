@@ -270,6 +270,7 @@ def leaderboard():
 
     return render_template('leaderboard.html',
                            current_user=current_user,
+                           full_name=full_name,
                            friends_leaderboard=friends_leaderboard,
                            initials=initials,
                            league_users=league_users,
@@ -325,6 +326,75 @@ def remove_friend(friend_id):
 
     return redirect(url_for('auth.list_users'))
 
+# ----------------------------------- RESULT SUMMARY SYSTEM -----------------------------------
+
+@auth_bp.route('/save-session-results', methods=['POST'])
+def save_session_results():
+    """
+    Called by both game_page and ml_game when a session ends.
+    Saves results temporarily in the Flask session (not the DB).
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'success': False, 'error': 'User not logged in'}), 401
+
+    data = request.get_json()
+    session_type = data.get('type')  # 'game' or 'ml'
+    xp = data.get('xp', 0)
+    accuracy = data.get('accuracy', 0)
+    skipped = data.get('skipped', False)
+
+    if session_type not in ['game', 'ml']:
+        return jsonify({'success': False, 'error': 'Invalid session type'}), 400
+
+    session_key = f"{session_type}_results"
+    session[session_key] = {
+        'xp': xp,
+        'accuracy': accuracy,
+        'skipped': skipped
+    }
+
+    return jsonify({'success': True, 'message': f'{session_type} results saved.'})
+
+
+@auth_bp.route('/result-summary')
+def result_summary():
+    """
+    Renders the result summary page (HTML).
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        flash('Please log in to view your results.', 'warning')
+        return redirect(url_for('auth.login'))
+
+    return render_template('result_summary.html', user=session.get('user'))
+
+
+@auth_bp.route('/get-summary-results')
+def get_summary_results():
+    """
+    Combines the results of both game and ML practice sessions.
+    Skipped sessions are not counted toward accuracy.
+    """
+    game_data = session.get('game_results', {'xp': 0, 'accuracy': 0, 'skipped': True})
+    ml_data = session.get('ml_results', {'xp': 0, 'accuracy': 0, 'skipped': True})
+
+    total_xp = 0
+    total_accuracy = 0
+    completed_count = 0
+
+    for data in [game_data, ml_data]:
+        if not data.get('skipped', False):
+            total_xp += data.get('xp', 0)
+            total_accuracy += data.get('accuracy', 0)
+            completed_count += 1
+
+    avg_accuracy = (total_accuracy / completed_count) if completed_count > 0 else 0
+
+    return jsonify({
+        'total_xp': total_xp,
+        'average_accuracy': avg_accuracy
+    })
 
 # ----------------------------------- GAME PAGE ------------------------------------------------
 
@@ -531,7 +601,7 @@ def course():
     full_name = user.name
 
     first_name,initials = get_initials(full_name)
-    return render_template("courses_final.html", user=session.get('user'), lessons=lessons, initials=initials, first_name=first_name, login_today=login_today)
+    return render_template("courses_final.html", user=session.get('user'), lessons=lessons, initials=initials, first_name=first_name, login_today=login_today, full_name=full_name)
 
 
 @auth_bp.route('/get-question')
@@ -615,7 +685,7 @@ def edit_account():
         except ValueError:
             flash('Invalid age format.', 'danger')
             form_data = {k: v for k, v in request.form.items() if 'password' not in k}
-            return render_template('edit_account.html', current_user_data=form_data, user=user, initials=initials)
+            return render_template('edit_account.html', current_user_data=form_data, user=user, initials=initials, full_name=full_name)
 
         # Update basic information
         user.name = name if name else "Anonymous Wanderer"
@@ -627,7 +697,7 @@ def edit_account():
             if existing_user_with_email:
                 flash('That email address is already in use by another account.', 'danger')
                 form_data = {k: v for k, v in request.form.items() if 'password' not in k}
-                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials, full_name=full_name)
             user.email = email
             session['user'] = email 
 
@@ -636,22 +706,22 @@ def edit_account():
             if not current_password_form:
                 flash('Please enter your current password to set a new one.', 'danger')
                 form_data = {k: v for k, v in request.form.items() if 'password' not in k}
-                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials, full_name=full_name)
 
             if user.password != current_password_form:
                 flash('Incorrect current password.', 'danger')
                 form_data = {k: v for k, v in request.form.items() if 'password' not in k}
-                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials, full_name=full_name)
 
             if new_password != confirm_new_password:
                 flash('New passwords do not match.', 'danger')
                 form_data = {k: v for k, v in request.form.items() if 'password' not in k}
-                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials)
+                return render_template('edit_account.html', current_user_data=form_data, user=user,initials=initials, full_name=full_name)
             
             if len(new_password) < 6: # Example minimum length
                  flash('New password must be at least 6 characters long.', 'danger')
                  form_data = {k: v for k, v in request.form.items() if 'password' not in k}
-                 return render_template('edit_account.html', current_user_data=form_data, user=user, initials=initials)
+                 return render_template('edit_account.html', current_user_data=form_data, user=user, initials=initials, full_name=full_name)
 
             user.password = new_password # Storing new password in plain text (INSECURE)
             password_changed = True
@@ -675,7 +745,7 @@ def edit_account():
             form_data['name'] = name 
             form_data['age'] = age_str # Use original string for age input
             form_data['email'] = email
-            return render_template('edit_account.html', current_user_data=form_data, user=user, error='Database commit error.', initials=initials)
+            return render_template('edit_account.html', current_user_data=form_data, user=user, error='Database commit error.', initials=initials, full_name=full_name)
 
 
     # For GET request or if POST had errors that re-render the page
@@ -684,7 +754,7 @@ def edit_account():
         'age': user.age,
         'email': user.email
     }
-    return render_template('edit_account.html', current_user_data=current_user_data_for_form, user=user, initials=initials)
+    return render_template('edit_account.html', current_user_data=current_user_data_for_form, user=user, initials=initials, full_name=full_name)
 
 
 

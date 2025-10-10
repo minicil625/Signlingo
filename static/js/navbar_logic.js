@@ -18,3 +18,16 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", function() {
+    const profileName = document.getElementById("profileName");
+    if (profileName) {
+        const fullName = profileName.textContent.trim();
+        const maxLength = 12;
+
+        if (fullName.length > maxLength) {
+            let shortName = fullName.substring(0, maxLength).trimEnd();
+            profileName.textContent = shortName + "...";
+        }
+    }
+});

@@ -164,6 +164,24 @@ h1, h2, h3, h4, h5, h6 {
     flex-shrink: 0;
 }
 
+.profile-info {
+    display: flex;
+    flex-direction: column;
+    line-height: 1.2;
+}
+
+#profileName {
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--neutral-dark);
+}
+
+.profile-id {
+    font-size: 13px;
+    margin-top: 2px;
+    color: #9CA3AF; /* subtle gray tone */
+}
+
 .logout-link {
     display: flex;
     align-items: center;
