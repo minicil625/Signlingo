@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
 from models import Lesson, UserLessonStatus, db, User  # Import the database and User model
+from models import Course, Module, Unit
 import random,json
 from tertiary import get_initials, get_random_question
 from email_validator import validate_email, EmailNotValidError
