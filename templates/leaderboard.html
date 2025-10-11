@@ -26,6 +26,10 @@
                 <i class="fas fa-book"></i>
                 <span>Courses</span>
             </a>
+            <a class="sidebar-link" href="/daily-quiz">
+                <i class="fas fa-clipboard-list"></i>
+                <span>Daily Quiz</span>
+            </a>
             <a class="sidebar-link active" href="/leaderboard">
                 <i class="fas fa-trophy"></i>
                 <span>Leaderboard</span>
@@ -43,12 +47,9 @@
             </button>
         </div>
         <div class="sidebar-footer">
-            <a class="profile-link" href="/edit-account" id="profileLink">
+            <a class="profile-link" href="/edit-account">
                 <div class="profile-circle-sidebar">{{ initials }}</div>
-                <div class="profile-info">
-                    <span id="profileName">{{ full_name }}</span>
-                    <span class="profile-id">@ab93f1x</span>
-                </div>
+                <span>Profile</span>
             </a>
             <a class="logout-link" href="/logout">
                 <i class="fas fa-sign-out-alt"></i>
@@ -127,8 +128,7 @@
                                 <p class="leaderboard-subtitle">Challenge your friends</p>
                             </div>
                         </div>
-                        
-                        <div class="players-list">
+                        <div class="players-list" id="friendsLeaderboardList">
                             {% for user in friends_leaderboard %}
                             <div class="player-card {% if user.id == current_user.id %}current-user{% endif %}">
                                 <div class="player-info">
