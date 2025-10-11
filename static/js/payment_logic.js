@@ -33,3 +33,33 @@ if (expiryInput) {
         e.target.value = value;
     });
 }
+
+// Detect card type and show logo
+const cardLogo = document.getElementById('cardLogo');
+
+if (cardNumberInput && cardLogo) {
+    cardNumberInput.addEventListener('input', function(e) {
+        let value = e.target.value.replace(/\s/g, '');
+
+        // Determine card type by prefix
+        let cardType = '';
+        if (/^4/.test(value)) cardType = 'visa';
+        else if (/^5[1-5]/.test(value)) cardType = 'mastercard';
+        else if (/^3[47]/.test(value)) cardType = 'amex';
+        else if (/^6(?:011|5)/.test(value)) cardType = 'discover';
+        else cardType = '';
+
+        // Update logo
+        if (cardType) {
+            cardLogo.className = `fab fa-cc-${cardType}`;
+            cardLogo.style.display = 'block';
+            // Optional: color per card type
+            if (cardType === 'visa') cardLogo.style.color = '#1A1F71';
+            else if (cardType === 'mastercard') cardLogo.style.color = '#EB001B';
+            else if (cardType === 'amex') cardLogo.style.color = '#006FCF';
+            else cardLogo.style.color = '#555';
+        } else {
+            cardLogo.style.display = 'none';
+        }
+    });
+}
