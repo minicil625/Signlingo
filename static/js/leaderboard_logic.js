@@ -88,7 +88,7 @@ document.addEventListener('DOMContentLoaded', function() {
         friendsLeaderboardList.insertAdjacentHTML('beforeend', friendRowHTML);
     };
     
-    // Add the event listener to the form
+    // Add the event listeners to the form
     if (searchForm) {
         searchForm.addEventListener('submit', handleSearch);
     }
