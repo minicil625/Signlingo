@@ -162,7 +162,8 @@ def dashboard():
                            login_today=login_today,
                            user_points = user.points,
                            user_league = user.league,
-                           user_rank=user_rank)
+                           user_rank=user_rank,
+                           user = user)
 
 @auth_bp.route('/premium', methods=['GET', 'POST'])
 def premium():
@@ -516,6 +517,22 @@ def ml_game():
         total_lessons_count=total_lessons_count,
         module_accuracy=module_accuracy # Pass this to the template
     )
+
+@auth_bp.route('/decrement_life', methods=['POST'])
+def decrement_life():
+    if 'user_id' not in session:
+        # User not logged in, return an error
+        return jsonify({'success': False, 'error': 'User not authenticated'}), 401
+
+    user = User.query.get(session['user_id'])
+    if user:
+        if user.lives > 0:
+            user.lives -= 1
+            db.session.commit()
+        # Return the new number of lives
+        return jsonify({'success': True, 'new_lives': user.lives})
+    
+    return jsonify({'success': False, 'error': 'User not found'}), 404
 
 # In routes.py
 @auth_bp.route('/video_learning')
