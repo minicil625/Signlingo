@@ -98,9 +98,10 @@
 
                 <!-- Card Details (shown when card is selected) -->
                 <div class="card-details active" id="cardDetails">
-                    <div class="form-group">
+                    <div class="form-group card-number-group" style="position: relative;">
                         <label class="form-label">Card Number</label>
                         <input type="text" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19">
+                        <i id="cardLogo" class="fab" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); font-size: 24px; display: none;"></i>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
@@ -171,12 +172,12 @@
                 {% elif plan == "monthly" %}
                 <div class="summary-row">
                     <span class="summary-label">Monthly Plan</span>
-                    <span class="summary-value">Rp 49,900</span>
+                    <span class="summary-value">Rp 50,000</span>
                 </div>
                 {% elif plan == "family" %}
                 <div class="summary-row">
                     <span class="summary-label">Family Plan</span>
-                    <span class="summary-value">Rp 90,900</span>
+                    <span class="summary-value">Rp 1,800,000</span>
                 </div>
                 {% endif %}
 
@@ -195,10 +196,22 @@
 
                 <div class="summary-divider"></div>
 
+                {% if plan == "yearly" %}
                 <div class="total-row">
                     <span class="total-label">Total Due Today</span>
                     <span class="total-amount">Rp 480K</span>
                 </div>
+                {% elif plan == "monthly" %}
+                <div class="total-row">
+                    <span class="total-label">Total Due Today</span>
+                    <span class="total-amount">Rp 50K</span>
+                </div>
+                {% elif plan == "family" %}
+                <div class="total-row">
+                    <span class="total-label">Total Due Today</span>
+                    <span class="total-amount">Rp 1,800K</span>
+                </div>
+                {% endif %}
 
                 <button class="btn-submit">
                     <i class="fas fa-lock"></i>

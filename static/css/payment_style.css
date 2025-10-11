@@ -254,6 +254,10 @@ h1, h2, h3 {
     animation: slideDown 0.3s ease;
 }
 
+#cardLogo {
+    height: 0px;
+}
+
 @keyframes slideDown {
     from {
         opacity: 0;

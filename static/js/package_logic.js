@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 pricingInfo.innerHTML = `7 day free trial, then Rp ${annualPrice} per month plus applicable taxes`;
             } else if (plan === 'family') {
                 // Note: You might want to update the hardcoded "1.859.000,00" to use the data-annual attribute for consistency
-                pricingInfo.innerHTML = `7 day free trial, then Rp 1.859.000,00 per year<br>(Rp ${monthlyPrice}/month, billed annually) plus applicable taxes`;
+                pricingInfo.innerHTML = `7 day free trial, then Rp 1,800,000 per year<br>(Rp ${monthlyPrice}/month, billed annually) plus applicable taxes`;
             } else { // This handles the 'yearly' plan
                 pricingInfo.innerHTML = `7 day free trial, then Rp ${annualPrice} per year<br>(Rp ${monthlyPrice}/month, billed annually) plus applicable taxes`;
             }
