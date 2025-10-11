@@ -168,8 +168,19 @@ def dashboard():
 def premium():
     return render_template('premium.html')
 
-@auth_bp.route('/package', methods=['GET', 'POST'])
+@auth_bp.route('/package', methods=['GET','POST'])
 def package():
+    if request.method == 'POST':
+        if 'user_id' not in session:
+            flash('Please log in to select a plan.', 'warning')
+            return redirect(url_for('auth.login'))
+
+        selected_plan = request.form.get('plan')
+        
+        # Store the plan in the session or process it
+        # For now, we'll just pass it to the payment page
+        
+        return render_template('payment.html', plan=selected_plan)
     return render_template('package.html')
 
 @auth_bp.route('/payment', methods=['GET', 'POST'])

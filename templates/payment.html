@@ -118,12 +118,25 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Order Summary -->
+            
             <div class="order-summary">
-                <span class="plan-badge">PREMIUM</span>
-                <h3 class="plan-name">Yearly Plan</h3>
-                <p class="plan-description">Best value for committed learners</p>
+                {% if plan == 'yearly' %}
+                    <span class="plan-badge">MOST POPULAR</span>
+                    <h3 class="plan-name">Yearly Plan</h3>
+                    <p class="plan-description">Best value for committed learners</p>
+
+                {# Family Plan #}
+                {% elif plan == 'family' %}
+                    <span class="plan-badge">2-6 MEMBERS</span>
+                    <h3 class="plan-name">Family Plan</h3>
+                    <p class="plan-description">Share the learning with your family</p>
+
+                {# Monthly Plan #}
+                {% elif plan == 'monthly' %}
+                    <span class="plan-badge">FLEXIBLE</span>
+                    <h3 class="plan-name">Monthly Plan</h3>
+                    <p class="plan-description">Perfect for trying out Premium</p>
+                {% endif %}
 
                 <ul class="features-list">
                     <li class="feature-item">
@@ -150,10 +163,22 @@
 
                 <div class="summary-divider"></div>
 
+                {% if plan == "yearly" %}
                 <div class="summary-row">
                     <span class="summary-label">Yearly Plan</span>
                     <span class="summary-value">Rp 480,000</span>
                 </div>
+                {% elif plan == "monthly" %}
+                <div class="summary-row">
+                    <span class="summary-label">Monthly Plan</span>
+                    <span class="summary-value">Rp 49,900</span>
+                </div>
+                {% elif plan == "family" %}
+                <div class="summary-row">
+                    <span class="summary-label">Family Plan</span>
+                    <span class="summary-value">Rp 90,900</span>
+                </div>
+                {% endif %}
 
                 <div class="promo-section">
                     <label class="form-label">Promo Code</label>
