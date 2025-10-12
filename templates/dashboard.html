@@ -202,33 +202,51 @@
 
                     <div class="streak-card mb-4">
                         <div class="streak-header">
+                            <div class="streak-flame-icon">
+                                <i class="fas fa-fire"></i>
+                            </div>
+                            <div class="streak-count">
+                                <div class="streak-number">{{ current_streak }}</div>
+                                <div class="streak-label">day streak</div>
+                            </div>
+                        </div>
+                        
+                        <div class="streak-days-container">
+                            <div class="streak-day-labels">
+                                {% for day in streak_data %}
+                                <div class="streak-day-label">{{ day.day }}</div>
+                                {% endfor %}
+                            </div>
+
+                            <div class="streak-days">
+                                {% for day in streak_data %}
+                                <div class="streak-day {% if day.is_active %}active{% endif %} {% if day.is_streak_saver %}streak-saver{% endif %} {% if day.date == today %}today{% endif %}"
+                                    data-date="{{ day.date }}"
+                                    title="{{ day.date.strftime('%b %d, %Y') }}">
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        {% if current_streak >= 7 %}
+                        <div class="streak-message success">
+                            <i class="fas fa-trophy"></i>
+                            <strong>Amazing!</strong> You've maintained a full week streak! Keep it up!
+                        </div>
+                        {% elif current_streak >= 3 %}
+                        <div class="streak-message success">
                             <i class="fas fa-fire"></i>
-                            {% if login_today == True %}
-                            <h3 class="subheading">1 day streak!</h3>
-                            {% else %}
-                            <h3 class="subheading">0 day streak!</h3>
-                            {% endif %}
+                            <strong>Great work!</strong> You're building a solid learning habit!
                         </div>
-                        <p class="caption mb-3">Daily Streak</p>
-                        <div class="streak-days">
-                            {% if login_today == True %}
-                            <div class="streak-day active">1</div>
-                            <div class="streak-day">2</div>
-                            <div class="streak-day">3</div>
-                            <div class="streak-day">4</div>
-                            <div class="streak-day">5</div>
-                            <div class="streak-day">6</div>
-                            <div class="streak-day">7</div>
-                            {% else %}
-                            <div class="streak-day">1</div>
-                            <div class="streak-day">2</div>
-                            <div class="streak-day">3</div>
-                            <div class="streak-day">4</div>
-                            <div class="streak-day">5</div>
-                            <div class="streak-day">6</div>
-                            <div class="streak-day">7</div>
-                            {% endif %}
+                        {% elif current_streak == 0 %}
+                        <div class="streak-message warning">
+                            <i class="fas fa-info-circle"></i>Complete a lesson today to start your streak!
                         </div>
+                        {% else %}
+                        <div class="streak-message">
+                            <i class="fas fa-thumbs-up"></i>Keep going! Complete lessons daily to build your streak.
+                        </div>
+                        {% endif %}
                     </div>
 
                     <div class="rank-card mb-4">
