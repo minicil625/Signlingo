@@ -22,6 +22,14 @@ def safe_send_email(msg, retries=3, delay=3):
             else:
                 return False
 
+def generate_username(name):
+    random_number = random.randint(1,100)
+    username = "@" + name + str(random_number)
+    while (User.query.filter_by(username=username).first()):
+        random_number = random.randint(1,100)
+        username = "@" + name + str(random_number)
+    return username
+
 s = URLSafeTimedSerializer(app.secret_key)
 
 def generate_token(email):
@@ -70,7 +78,9 @@ def register():
             error_message = "Email already exists."
             return render_template('sign_up.html', error=error_message)
 
-        new_user = User(age=age, name=name, email=email, password=password)
+        username = generate_username(name)
+        print(username)
+        new_user = User(age=age, name=name, email=email, password=password, username=username)
         new_user.is_verified = False
         db.session.add(new_user)
         db.session.commit()

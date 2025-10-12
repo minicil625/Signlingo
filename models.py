@@ -19,6 +19,7 @@ class User(db.Model):
     lesson_statuses = db.relationship('UserLessonStatus', backref='user', lazy=True)
     is_verified = db.Column(db.Boolean, default=False)
     lives = db.Column(db.Integer, default=5)
+    username = db.Column(db.String(80), unique = True)
     
     # Streaks
     streak = db.Column(db.Integer, default=0)
