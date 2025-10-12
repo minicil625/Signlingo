@@ -203,7 +203,8 @@ def dashboard():
         user_rank=user_rank,
         streak_data=streak_data,
         current_streak=current_streak,
-        today=today
+        today=today,
+        user=user
     )
 
 @auth_bp.route('/premium', methods=['GET', 'POST'])
