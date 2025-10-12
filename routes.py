@@ -206,6 +206,61 @@ def dashboard():
         today=today
     )
 
+@auth_bp.route('/premium', methods=['GET', 'POST'])
+def premium():
+    user_id = session.get('user_id')
+    print(user_id)
+    
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    
+    login_today = session.get("today_login")
+    print(login_today)
+
+    user = User.query.get(user_id)
+    full_name = user.name
+
+    first_name,initials = get_initials(full_name)
+    return render_template('premium.html',full_name=full_name,first_name=first_name,initials=initials)
+
+@auth_bp.route('/package', methods=['GET','POST'])
+def package():
+    user_id = session.get('user_id')
+    print(user_id)
+    
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    
+    login_today = session.get("today_login")
+    print(login_today)
+
+    user = User.query.get(user_id)
+    full_name = user.name
+
+    first_name,initials = get_initials(full_name)
+    if request.method == 'POST':
+        if 'user_id' not in session:
+            flash('Please log in to select a plan.', 'warning')
+            return redirect(url_for('auth.login'))
+
+        selected_plan = request.form.get('plan')
+        
+        # Store the plan in the session or process it
+        # For now, we'll just pass it to the payment page
+        
+        return render_template('payment.html', plan=selected_plan, 
+                               full_name=full_name, 
+                               first_name=first_name, 
+                               initials=initials,)
+    return render_template('package.html',                                
+                            full_name=full_name, 
+                               first_name=first_name, 
+                               initials=initials,)
+
+@auth_bp.route('/payment', methods=['GET', 'POST'])
+def payment():
+    return render_template('payment.html')
+
 @auth_bp.route('/logout')
 def logout():
     session.pop('user', None)
