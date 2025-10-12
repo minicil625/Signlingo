@@ -40,8 +40,42 @@ function showFeedbackBanner(isCorrect, correctAns) {
     } else {
         banner.classList.add('incorrect');
         feedbackText.innerText = `Correct answer: ${correctAns}`;
+        
+        // --- THIS IS THE NEW PART ---
+        // Call the backend to remove one life
+        removeLife();
     }
     banner.classList.add('show');
+}
+
+// New function to handle the API call and UI update
+function removeLife() {
+    fetch('/decrement_life', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            // Update the lives count on the screen
+            const livesCountElement = document.getElementById('lives-count');
+            if (livesCountElement) {
+                livesCountElement.innerText = data.new_lives;
+            }
+
+            // Optional: Check if the user is out of lives
+            if (data.new_lives <= 0) {
+                // You could show a "Game Over" message or redirect
+                alert("You're out of lives! Game Over.");
+                // window.location.href = '/dashboard'; // Example redirect
+            }
+        } else {
+            console.error('Failed to decrement life:', data.error);
+        }
+    })
+    .catch(error => console.error('Error:', error));
 }
 
 function hideFeedbackBanner() {

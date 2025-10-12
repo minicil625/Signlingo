@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
 from models import Lesson, UserLessonStatus, db, User  # Import the database and User model
+from models import Course, Module, Unit
 import random,json
 from tertiary import get_initials, get_random_question
 from email_validator import validate_email, EmailNotValidError
@@ -161,7 +162,63 @@ def dashboard():
                            login_today=login_today,
                            user_points = user.points,
                            user_league = user.league,
-                           user_rank=user_rank)
+                           user_rank=user_rank,
+                           user = user)
+
+@auth_bp.route('/premium', methods=['GET', 'POST'])
+def premium():
+    user_id = session.get('user_id')
+    print(user_id)
+    
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    
+    login_today = session.get("today_login")
+    print(login_today)
+
+    user = User.query.get(user_id)
+    full_name = user.name
+
+    first_name,initials = get_initials(full_name)
+    return render_template('premium.html',full_name=full_name,first_name=first_name,initials=initials)
+
+@auth_bp.route('/package', methods=['GET','POST'])
+def package():
+    user_id = session.get('user_id')
+    print(user_id)
+    
+    if not user_id:
+        return redirect(url_for('auth.login'))
+    
+    login_today = session.get("today_login")
+    print(login_today)
+
+    user = User.query.get(user_id)
+    full_name = user.name
+
+    first_name,initials = get_initials(full_name)
+    if request.method == 'POST':
+        if 'user_id' not in session:
+            flash('Please log in to select a plan.', 'warning')
+            return redirect(url_for('auth.login'))
+
+        selected_plan = request.form.get('plan')
+        
+        # Store the plan in the session or process it
+        # For now, we'll just pass it to the payment page
+        
+        return render_template('payment.html', plan=selected_plan, 
+                               full_name=full_name, 
+                               first_name=first_name, 
+                               initials=initials,)
+    return render_template('package.html',                                
+                            full_name=full_name, 
+                               first_name=first_name, 
+                               initials=initials,)
+
+@auth_bp.route('/payment', methods=['GET', 'POST'])
+def payment():
+    return render_template('payment.html')
 
 @auth_bp.route('/logout')
 def logout():
@@ -460,6 +517,22 @@ def ml_game():
         total_lessons_count=total_lessons_count,
         module_accuracy=module_accuracy # Pass this to the template
     )
+
+@auth_bp.route('/decrement_life', methods=['POST'])
+def decrement_life():
+    if 'user_id' not in session:
+        # User not logged in, return an error
+        return jsonify({'success': False, 'error': 'User not authenticated'}), 401
+
+    user = User.query.get(session['user_id'])
+    if user:
+        if user.lives > 0:
+            user.lives -= 1
+            db.session.commit()
+        # Return the new number of lives
+        return jsonify({'success': True, 'new_lives': user.lives})
+    
+    return jsonify({'success': False, 'error': 'User not found'}), 404
 
 # In routes.py
 @auth_bp.route('/video_learning')

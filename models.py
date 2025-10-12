@@ -18,6 +18,7 @@ class User(db.Model):
     points = db.Column(db.Integer, default=0)
     lesson_statuses = db.relationship('UserLessonStatus', backref='user', lazy=True)
     is_verified = db.Column(db.Boolean, default=False)
+    lives = db.Column(db.Integer, default=5)
     
     # Streaks
     streak = db.Column(db.Integer, default=0)
