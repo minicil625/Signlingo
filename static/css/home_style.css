@@ -363,59 +363,233 @@
     color: var(--white);
 }
 
-/* Streak Card */
+/* Streak Card - Duolingo Quality */
 .streak-card {
     background: var(--white);
-    border-radius: 16px;
-    padding: var(--space-l);
-    box-shadow: 0 4px 12px var(--card-shadow);
+    border-radius: 20px;
+    padding: var(--space-xl);
+    box-shadow: 0 4px 20px var(--card-shadow);
+    position: relative;
+    overflow: hidden;
+}
+
+.streak-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--secondary));
 }
 
 .streak-header {
     display: flex;
     align-items: center;
-    gap: var(--space-s);
+    gap: var(--space-m);
     margin-bottom: var(--space-s);
 }
 
-.streak-header i {
-    color: var(--secondary);
-    font-size: 24px;
-}
-
-.streak-days {
-    display: flex;
-    justify-content: space-between;
-    gap: var(--space-xs);
-}
-
-.streak-day {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background-color: var(--border);
-    color: #9CA3AF;
+.streak-flame-icon {
+    width: 48px;
+    height: 48px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: 600;
-    font-size: 14px;
-    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #FF6B35 0%, #FF8E53 50%, #FFA500 100%);
+    border-radius: 50%;
+    position: relative;
+    box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+    animation: flameGlow 2s ease-in-out infinite;
 }
 
-.streak-day.active {
-    background: linear-gradient(135deg, var(--accent), #8FD52E);
+.streak-flame-icon i {
     color: var(--white);
-    animation: pulse 0.6s ease;
+    font-size: 24px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
 }
 
-@keyframes pulse {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.1); }
+@keyframes flameGlow {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        transform: scale(1);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(255, 107, 53, 0.5);
+        transform: scale(1.05);
+    }
 }
 
-.streak-day:hover {
+.streak-count {
+    display: flex;
+    flex-direction: column;
+}
+
+.streak-number {
+    font-family: 'Poppins', sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--neutral-dark);
+    line-height: 1;
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.streak-label {
+    font-size: 14px;
+    color: #6B7280;
+    font-weight: 500;
+    margin-top: 2px;
+}
+
+.streak-days-container {
+    margin-top: var(--space-l);
+}
+
+.streak-days-label {
+    font-size: 12px;
+    color: #9CA3AF;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: var(--space-m);
+    font-weight: 600;
+}
+
+/* New styles for the separated day labels */
+.streak-day-labels {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--space-s);
+    margin-bottom: var(--space-s);
+    text-align: center;
+}
+
+.streak-day-label {
+    font-size: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #9CA3AF;
+    letter-spacing: 0.5px;
+}
+
+.streak-days {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: var(--space-s);
+}
+
+.streak-day {
+    aspect-ratio: 1;
+    border-radius: 12px;
+    background-color: var(--neutral-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Active day state */
+.streak-day.active {
+    background: linear-gradient(135deg, var(--accent) 0%, #8FD52E 100%);
+    color: var(--white);
     transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(124, 179, 66, 0.3);
+}
+
+/* MODIFIED: Center the checkmark and use Font Awesome icon */
+.streak-day.active::after {
+    content: '\f00c'; /* Font Awesome check icon unicode */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; /* Required for solid icons */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px; /* Adjusted size for the icon */
+    color: var(--white);
+    z-index: 3;
+}
+
+/* Streak saver state */
+.streak-day.streak-saver {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: var(--white);
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    animation: streakSaverPulse 2s ease-in-out infinite;
+}
+
+/* MODIFIED: Center the shield and use Font Awesome icon */
+.streak-day.streak-saver::after {
+    content: '\f132'; /* Font Awesome shield icon unicode */
+    font-family: "Font Awesome 6 Free";
+    font-weight: 900; /* Required for solid icons */
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20px;
+    z-index: 3;
+}
+
+@keyframes streakSaverPulse {
+    0%, 100% {
+        box-shadow: 0 4px 12px rgba(255, 215, 0, 0.4);
+    }
+    50% {
+        box-shadow: 0 4px 20px rgba(255, 215, 0, 0.6);
+    }
+}
+
+/* Today indicator */
+.streak-day.today {
+    border: 2px solid var(--primary);
+}
+
+.streak-day.today:not(.active):not(.streak-saver) {
+    background: var(--white);
+    color: var(--primary);
+}
+
+/* Hover effect */
+.streak-day:hover {
+    transform: translateY(-2px) scale(1.08);
+}
+
+.streak-day.active:hover,
+.streak-day.streak-saver:hover {
+    transform: translateY(-2px) scale(1.1);
+}
+
+/* Streak info message */
+.streak-message {
+    margin-top: var(--space-m);
+    padding: var(--space-m);
+    background: linear-gradient(135deg, rgba(124, 179, 66, 0.1), rgba(143, 213, 46, 0.1));
+    border-radius: 12px;
+    border-left: 4px solid var(--accent);
+    font-size: 13px;
+    color: #4B5563;
+    line-height: 1.5;
+}
+
+.streak-message.warning {
+    background: linear-gradient(135deg, rgba(255, 107, 53, 0.1), rgba(255, 142, 83, 0.1));
+    border-left-color: var(--secondary);
+}
+
+.streak-message.success {
+    background: linear-gradient(135deg, rgba(124, 179, 66, 0.1), rgba(143, 213, 46, 0.1));
+    border-left-color: var(--accent);
+}
+
+.streak-message i {
+    margin-right: var(--space-s);
+    font-size: 14px;
 }
 
 /* Rank Card */
@@ -470,6 +644,10 @@
 
 .rank-badge.gold {
     background: linear-gradient(135deg, var(--gold), #FFA500);
+}
+
+.rank-badge.platinum {
+    background: linear-gradient(135deg, #E5E4E2, #BCC6CC);
 }
 
 .rank-badge.diamond {
@@ -566,5 +744,33 @@
     }
     .subheading {
         font-size: 18px;
+    }
+    .streak-days {
+        gap: 4px;
+    }
+    
+    .streak-day {
+        border-radius: 8px;
+    }
+    
+    .streak-day-label {
+        font-size: 9px;
+    }
+    
+    .streak-day-number {
+        font-size: 14px;
+    }
+    
+    .streak-flame-icon {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .streak-flame-icon i {
+        font-size: 20px;
+    }
+    
+    .streak-number {
+        font-size: 28px;
     }
 }

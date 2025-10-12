@@ -77,6 +77,10 @@
     background: linear-gradient(135deg, var(--gold), #FFA500);
 }
 
+.header-icon-wrapper.league.league-gold {
+    background: linear-gradient(135deg, #E5E4E2, #BCC6CC);
+}
+
 .header-icon-wrapper.league.league-diamond {
     background: linear-gradient(135deg, #00CED1, #4169E1);
 }

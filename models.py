@@ -47,12 +47,14 @@ class User(db.Model):
 
     @property
     def league(self):
-        if self.points < 100:
+        if self.points < 1000:
             return "Bronze"
-        elif self.points < 500:
+        elif self.points < 3000:
             return "Silver"
-        elif self.points < 1000:
+        elif self.points < 6000:
             return "Gold"
+        elif self.points < 10000:
+            return "Platinum"
         else:
             return "Diamond"
 

@@ -138,32 +138,74 @@ def login():
 
 @auth_bp.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
+    from datetime import datetime, timedelta
+    from sqlalchemy import func
+
     user_id = session.get('user_id')
-    print(user_id)
-    
     if not user_id:
         return redirect(url_for('auth.login'))
-    
+
     login_today = session.get("today_login")
-    print(login_today)
 
     user = User.query.get(user_id)
     full_name = user.name
-
-    first_name,initials = get_initials(full_name)
+    first_name, initials = get_initials(full_name)
 
     all_users = User.query.order_by(User.points.desc()).all()
     user_rank = next((i + 1 for i, u in enumerate(all_users) if u.id == user_id), None)
 
-    return render_template("dashboard.html",
-                           full_name=full_name, 
-                           first_name=first_name, 
-                           initials=initials,
-                           login_today=login_today,
-                           user_points = user.points,
-                           user_league = user.league,
-                           user_rank=user_rank,
-                           user = user)
+    # ----------------- WEEKLY STREAK (Monday → Sunday of current week) -----------------
+    today = datetime.now().date()
+    monday = today - timedelta(days=today.weekday())
+    sunday = monday + timedelta(days=6)
+
+    activity_dates = db.session.query(
+        func.date(UserLessonStatus.last_updated).label('activity_date')
+    ).filter(
+        UserLessonStatus.user_id == user_id,
+        func.date(UserLessonStatus.last_updated).between(monday, sunday)
+    ).distinct().all()
+
+    # Convert to proper date objects
+    active_dates = {datetime.strptime(date.activity_date, '%Y-%m-%d').date()
+                    if isinstance(date.activity_date, str)
+                    else date.activity_date
+                    for date in activity_dates}
+
+    # Build streak data for this week
+    streak_data = []
+    for i in range(7):  # Monday → Sunday
+        check_date = monday + timedelta(days=i)
+        day_abbr = check_date.strftime('%a')[0]
+        is_active = check_date in active_dates
+        streak_data.append({'day': day_abbr, 'date': check_date, 'is_active': is_active})
+
+    # --- Correct current_streak counting (backward) ---
+    current_streak = 0
+    for i in range(6, -1, -1):  # from Sunday → Monday
+        day_entry = streak_data[i]
+        if day_entry['date'] > today:
+            continue
+        if day_entry['is_active']:
+            current_streak += 1
+        else:
+            break 
+
+    return render_template(
+        "dashboard.html",
+        full_name=full_name,
+        user_id=user_id,
+        first_name=first_name,
+        initials=initials,
+        login_today=login_today,
+        user_points=user.points,
+        user_league=user.league,
+        user_rank=user_rank,
+        streak_data=streak_data,
+        current_streak=current_streak,
+        today=today,
+        user=user
+    )
 
 @auth_bp.route('/premium', methods=['GET', 'POST'])
 def premium():
