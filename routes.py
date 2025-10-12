@@ -425,6 +425,32 @@ def remove_friend(friend_id):
 
     return redirect(url_for('auth.list_users'))
 
+@auth_bp.route('/search-users')
+def search_users():
+    """
+    Searches for users based on a query string.
+    """
+    user_id = session.get('user_id')
+    if not user_id:
+        return jsonify({'success': False, 'error': 'User not logged in'}), 401
+
+    query = request.args.get('q', '')
+
+    if len(query) < 2:
+        return jsonify([]) # Return empty list if query is too short
+
+    # Search for users whose name contains the query string, case-insensitive
+    # and exclude the current user from the results.
+    users = User.query.filter(
+        User.name.ilike(f'%{query}%'),
+        User.id != user_id
+    ).all()
+
+    # Format the results as a list of dictionaries
+    results = [{'id': user.id, 'name': user.name} for user in users]
+
+    return jsonify(results)
+
 # ----------------------------------- RESULT SUMMARY SYSTEM -----------------------------------
 
 @auth_bp.route('/save-session-results', methods=['POST'])
