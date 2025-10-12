@@ -1,24 +1,35 @@
 from flask import current_app
-# Adjust the import path for models if initialization.py is in a different location
-# If in the same directory as models.py:
-from models import db, Lesson, User
-# If models.py is in the parent directory (e.g., project_root/models.py)
-# and initialization.py is in project_root/your_app_package/initialization.py,
-# you might need from ..models import db, Lesson, or ensure your Python path is set up.
-# Assuming a flat structure for now where models.py is accessible:
-# from .models import db, Lesson # if initialization.py is part of a package
+from models import db, Lesson, User, Course, Module, Unit  # Import the new models
 import json
 
 def get_or_create_lessons_from_json():
     """
-    Reads lessons from lessons.json and populates the Lesson database table.
+    Reads lessons from lessons.json and populates the database with a default
+    course structure.
     """
+    # Create a default course if it doesn't exist
+    course = Course.query.filter_by(title="BISINDO Language").first()
+    if not course:
+        course = Course(title="BISINDO Language", description="Learn the basics of BISINDO sign language.")
+        db.session.add(course)
+        db.session.commit()
+
+    # Create a default module for this course
+    module = Module.query.filter_by(title="Introduction", course_id=course.id).first()
+    if not module:
+        module = Module(title="Introduction", course_id=course.id)
+        db.session.add(module)
+        db.session.commit()
+
+    # Create a default unit for this module
+    unit = Unit.query.filter_by(title="Getting Started", module_id=module.id).first()
+    if not unit:
+        unit = Unit(title="Getting Started", module_id=module.id)
+        db.session.add(unit)
+        db.session.commit()
+
     lessons_data_from_json = []
     try:
-        # Robust path to lessons.json, assuming it's in the instance folder or project root
-        # Or ensure it's placed where this script can find it.
-        # For instance_path: config_file_path = os.path.join(current_app.instance_path, 'lessons.json')
-        # For now, assuming it's findable from the project root:
         with open('lessons.json') as f:
             lessons_data_from_json = json.load(f)
     except FileNotFoundError:
@@ -28,13 +39,6 @@ def get_or_create_lessons_from_json():
         current_app.logger.error("Error decoding lessons.json. Check its format.")
         return []
 
-    # No need for 'with current_app.app_context()' here if this function
-    # will always be *called* from within an active app context (e.g., from the CLI command).
-    # However, if you want it to be callable from anywhere, keeping it is safer.
-    # For a CLI command that establishes its own app_context, it's fine without it here.
-    # Let's assume the caller (CLI command) sets up the app context.
-
-    saved_lessons = []
     for idx, lesson_data_item in enumerate(lessons_data_from_json):
         title = lesson_data_item.get('title')
         if not title:
@@ -48,16 +52,15 @@ def get_or_create_lessons_from_json():
                 lesson_key=lesson_key,
                 title=title,
                 url=lesson_data_item.get('url'),
-                order=idx
+                order=idx,
+                unit_id=unit.id  # <-- Associate the lesson with our new unit
             )
             db.session.add(lesson)
-            current_app.logger.info(f"Creating new lesson: {title} (Key: {lesson_key})")
+            current_app.logger.info(f"Creating new lesson: {title}")
         else:
-            lesson.title = title
-            lesson.url = lesson_data_item.get('url')
-            lesson.order = idx
-            current_app.logger.info(f"Updating existing lesson: {title} (Key: {lesson_key})")
-        saved_lessons.append(lesson) # Keep track of processed lessons for returning from DB
+            # Also update the unit_id for existing lessons
+            lesson.unit_id = unit.id
+            current_app.logger.info(f"Updating existing lesson: {title}")
 
     try:
         db.session.commit()
@@ -66,22 +69,16 @@ def get_or_create_lessons_from_json():
         current_app.logger.error(f"Database commit failed while seeding lessons: {e}")
         return []
 
-    # Fetch the saved/updated lessons by their keys or just re-query all
-    # This ensures we return actual DB objects consistent with the commit.
-    # If saved_lessons contains newly added items, their IDs might not be populated
-    # until after commit and refresh. So re-querying is safer.
     return Lesson.query.order_by(Lesson.order).all()
 
 def create_admin_user():
     """
     Checks for an existing admin user and creates one if not found.
     """
-    # Check if admin user already exists
     admin_email = "admin@example.com"
     user = User.query.filter_by(email=admin_email).first()
 
     if not user:
-        # Create a new admin user if one doesn't exist
         admin_user = User(
             name="Admin",
             age=99,

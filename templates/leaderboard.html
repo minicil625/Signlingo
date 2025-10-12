@@ -127,8 +127,7 @@
                                 <p class="leaderboard-subtitle">Challenge your friends</p>
                             </div>
                         </div>
-                        
-                        <div class="players-list">
+                        <div class="players-list" id="friendsLeaderboardList">
                             {% for user in friends_leaderboard %}
                             <div class="player-card {% if user.id == current_user.id %}current-user{% endif %}">
                                 <div class="player-info">

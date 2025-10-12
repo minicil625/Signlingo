@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, session, jsonify, flash
 from models import Lesson, UserLessonStatus, db, User  # Import the database and User model
+from models import Course, Module, Unit
 import random,json
 from tertiary import get_initials, get_random_question
 from email_validator import validate_email, EmailNotValidError
@@ -502,6 +503,22 @@ def ml_game():
         total_lessons_count=total_lessons_count,
         module_accuracy=module_accuracy # Pass this to the template
     )
+
+@auth_bp.route('/decrement_life', methods=['POST'])
+def decrement_life():
+    if 'user_id' not in session:
+        # User not logged in, return an error
+        return jsonify({'success': False, 'error': 'User not authenticated'}), 401
+
+    user = User.query.get(session['user_id'])
+    if user:
+        if user.lives > 0:
+            user.lives -= 1
+            db.session.commit()
+        # Return the new number of lives
+        return jsonify({'success': True, 'new_lives': user.lives})
+    
+    return jsonify({'success': False, 'error': 'User not found'}), 404
 
 # In routes.py
 @auth_bp.route('/video_learning')
