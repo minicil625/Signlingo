@@ -9,6 +9,8 @@ from itsdangerous import URLSafeTimedSerializer
 from app import mail, app  # to use app config + mail instance
 import time
 from smtplib import SMTPException
+from datetime import datetime, timedelta
+import pytz
 
 def safe_send_email(msg, retries=3, delay=3):
     """Send email with retry logic to handle intermittent network issues."""
@@ -165,7 +167,9 @@ def dashboard():
     user_rank = next((i + 1 for i, u in enumerate(all_users) if u.id == user_id), None)
 
     # ----------------- WEEKLY STREAK (Monday → Sunday of current week) -----------------
-    today = datetime.now().date()
+    indonesia_tz = pytz.timezone('Asia/Jakarta')
+    
+    today = datetime.now(indonesia_tz).date()
     monday = today - timedelta(days=today.weekday())
     sunday = monday + timedelta(days=6)
 
@@ -217,6 +221,80 @@ def dashboard():
         user=user
     )
 
+
+@auth_bp.route('/roadmap', methods=['GET', 'POST'])
+def roadmap():
+    from datetime import datetime, timedelta
+    from sqlalchemy import func
+
+    user_id = session.get('user_id')
+    if not user_id:
+        return redirect(url_for('auth.login'))
+
+    login_today = session.get("today_login")
+
+    user = User.query.get(user_id)
+    full_name = user.name
+    first_name, initials = get_initials(full_name)
+
+    all_users = User.query.order_by(User.points.desc()).all()
+    user_rank = next((i + 1 for i, u in enumerate(all_users) if u.id == user_id), None)
+
+    # ----------------- WEEKLY STREAK (Monday → Sunday of current week) -----------------
+    indonesia_tz = pytz.timezone('Asia/Jakarta')
+    
+    today = datetime.now(indonesia_tz).date()
+    monday = today - timedelta(days=today.weekday())
+    sunday = monday + timedelta(days=6)
+
+    activity_dates = db.session.query(
+        func.date(UserLessonStatus.last_updated).label('activity_date')
+    ).filter(
+        UserLessonStatus.user_id == user_id,
+        func.date(UserLessonStatus.last_updated).between(monday, sunday)
+    ).distinct().all()
+
+    # Convert to proper date objects
+    active_dates = {datetime.strptime(date.activity_date, '%Y-%m-%d').date()
+                    if isinstance(date.activity_date, str)
+                    else date.activity_date
+                    for date in activity_dates}
+
+    # Build streak data for this week
+    streak_data = []
+    for i in range(7):  # Monday → Sunday
+        check_date = monday + timedelta(days=i)
+        day_abbr = check_date.strftime('%a')[0]
+        is_active = check_date in active_dates
+        streak_data.append({'day': day_abbr, 'date': check_date, 'is_active': is_active})
+
+    # --- Correct current_streak counting (backward) ---
+    current_streak = 0
+    for i in range(6, -1, -1):  # from Sunday → Monday
+        day_entry = streak_data[i]
+        if day_entry['date'] > today:
+            continue
+        if day_entry['is_active']:
+            current_streak += 1
+        else:
+            break 
+
+    return render_template(
+        "roadmap.html",
+        full_name=full_name,
+        user_id=user_id,
+        first_name=first_name,
+        initials=initials,
+        login_today=login_today,
+        user_points=user.points,
+        user_league=user.league,
+        user_rank=user_rank,
+        streak_data=streak_data,
+        current_streak=current_streak,
+        today=today,
+        user=user
+    )
+
 @auth_bp.route('/premium', methods=['GET', 'POST'])
 def premium():
     user_id = session.get('user_id')
@@ -232,7 +310,7 @@ def premium():
     full_name = user.name
 
     first_name,initials = get_initials(full_name)
-    return render_template('premium.html',full_name=full_name,first_name=first_name,initials=initials)
+    return render_template('premium.html',full_name=full_name,first_name=first_name,initials=initials, user=user)
 
 @auth_bp.route('/package', methods=['GET','POST'])
 def package():
@@ -262,11 +340,13 @@ def package():
         return render_template('payment.html', plan=selected_plan, 
                                full_name=full_name, 
                                first_name=first_name, 
-                               initials=initials,)
+                               initials=initials,
+                               user=user)
     return render_template('package.html',                                
                             full_name=full_name, 
                                first_name=first_name, 
-                               initials=initials,)
+                               initials=initials,
+                               user=user)
 
 @auth_bp.route('/payment', methods=['GET', 'POST'])
 def payment():
@@ -383,7 +463,8 @@ def leaderboard():
                            friends_leaderboard=friends_leaderboard,
                            initials=initials,
                            league_users=league_users,
-                           league_name=current_user.league)
+                           league_name=current_user.league,
+                           user = user)
 
 # ----------------------------------- FRIENDS & USERS LIST -----------------------------------
 
@@ -661,6 +742,8 @@ def gamepage():
         flash('Please log in to play the game.', 'warning')
         return redirect(url_for('auth.login'))
 
+    user = User.query.get(user_id)
+
     # Ensure lessons are in the DB
     all_db_lessons = get_or_create_lessons_from_json() # Call this to ensure lessons table is populated
 
@@ -698,7 +781,7 @@ def gamepage():
     session.pop('questions_asked', None) 
     return render_template(
         "game_page.html", 
-        user=session.get('user'), 
+        user=user, 
         lessons=user_lessons_with_status,
         module_progress_percent=module_progress_percent, # For the main module progress bar
         # The existing progress bar inside quiz-card is for quiz question progress, leave its JS as is.
@@ -752,7 +835,7 @@ def course():
     full_name = user.name
 
     first_name,initials = get_initials(full_name)
-    return render_template("courses_final.html", user=session.get('user'), lessons=lessons, initials=initials, first_name=first_name, login_today=login_today, full_name=full_name)
+    return render_template("courses_final.html", user=user, lessons=lessons, initials=initials, first_name=first_name, login_today=login_today, full_name=full_name)
 
 
 @auth_bp.route('/get-question')

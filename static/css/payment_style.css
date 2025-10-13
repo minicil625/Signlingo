@@ -381,10 +381,9 @@ h1, h2, h3 {
 }
 
 .total-amount {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 700;
-    color: var(--primary);
-    font-family: 'Poppins', sans-serif;
+    color: var(--neutral-dark);
 }
 
 /* Submit Button */
@@ -479,10 +478,6 @@ h1, h2, h3 {
 
     .form-row {
         grid-template-columns: 1fr;
-    }
-
-    .total-amount {
-        font-size: 24px;
     }
 }
 

@@ -51,7 +51,7 @@
                 <div class="profile-circle-sidebar">{{ initials }}</div>
                 <div class="profile-info">
                     <span id="profileName">{{ full_name }}</span>
-                    <span class="profile-id">@ab93f1x</span>
+                    <span class="profile-id">{{user.username}}</span>
                 </div>
             </a>
             <a class="logout-link" href="/logout">
@@ -76,14 +76,14 @@
     <div class="main-content">
         <div class="package-container">
             <div class="package-header">
-                <div class="super-badge">SUPER</div>
+                <div class="super-badge">PREMIUM</div>
                 <h1 class="package-title">Choose a plan for after your 7-day<br>free trial</h1>
             </div>
 
             <form action="{{ url_for('auth.package') }}" method="POST" id="packageForm">
                 <div class="packages-wrapper">
                     <div class="package-card" data-plan="family" data-price="RP 150,000 / MO" data-annual="1,800,000">
-                    <div class="package-badge">2-6 MEMBERS</div>
+                    <div class="package-badge">4-6 MEMBERS</div>
                     <div class="package-content">
                         <div class="package-left">
                             <div class="package-duration">Family Plan</div>
