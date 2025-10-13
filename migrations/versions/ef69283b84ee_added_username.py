@@ -43,13 +43,15 @@ def upgrade():
     )
     with op.batch_alter_table('lesson', schema=None) as batch_op:
         batch_op.add_column(sa.Column('unit_id', sa.Integer(), nullable=False))
-        batch_op.create_foreign_key(None, 'unit', ['unit_id'], ['id'])
+        # Provide a name like 'fk_lesson_unit_id'
+        batch_op.create_foreign_key('fk_lesson_unit_id', 'unit', ['unit_id'], ['id'])
 
     with op.batch_alter_table('user', schema=None) as batch_op:
         batch_op.add_column(sa.Column('username', sa.String(length=80), nullable=True))
         batch_op.add_column(sa.Column('streak', sa.Integer(), nullable=True))
         batch_op.add_column(sa.Column('last_login_date', sa.Date(), nullable=True))
-        batch_op.create_unique_constraint(None, ['username'])
+        # Provide a name like 'uq_user_username'
+        batch_op.create_unique_constraint('uq_user_username', ['username'])
 
     # ### end Alembic commands ###
 

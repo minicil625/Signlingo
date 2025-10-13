@@ -84,7 +84,8 @@ def create_admin_user():
             age=99,
             email=admin_email,
             password="admin", # IMPORTANT: In a real application, you must hash this password!
-            is_verified = True
+            is_verified = True,
+            username="@admin"
         )
         db.session.add(admin_user)
         try:
