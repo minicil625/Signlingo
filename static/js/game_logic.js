@@ -41,7 +41,6 @@ function showFeedbackBanner(isCorrect, correctAns) {
         banner.classList.add('incorrect');
         feedbackText.innerText = `Correct answer: ${correctAns}`;
         
-        // --- THIS IS THE NEW PART ---
         // Call the backend to remove one life
         removeLife();
     }
@@ -59,23 +58,54 @@ function removeLife() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            // Update the lives count on the screen
-            const livesCountElement = document.getElementById('lives-count');
-            if (livesCountElement) {
-                livesCountElement.innerText = data.new_lives;
-            }
+            // Add losing life animation
+            const livesDisplay = document.querySelector('.lives-display');
+            livesDisplay.classList.add('losing-life');
+            
+            // Update the lives count with a slight delay for drama
+            setTimeout(() => {
+                const livesCountElement = document.getElementById('lives-count');
+                if (livesCountElement) {
+                    livesCountElement.innerText = data.new_lives;
+                }
+                
+                // Add low-lives warning state if 2 or fewer lives
+                if (data.new_lives <= 2 && data.new_lives > 0) {
+                    livesDisplay.classList.add('low-lives');
+                } else {
+                    livesDisplay.classList.remove('low-lives');
+                }
+            }, 200);
+            
+            // Remove animation class after completion
+            setTimeout(() => {
+                livesDisplay.classList.remove('losing-life');
+            }, 800);
 
-            // Optional: Check if the user is out of lives
+            // Check if the user is out of lives
             if (data.new_lives <= 0) {
-                // You could show a "Game Over" message or redirect
-                alert("You're out of lives! Game Over.");
-                // window.location.href = '/dashboard'; // Example redirect
+                setTimeout(() => {
+                    showOutOfLivesModal();
+                }, 900);
             }
         } else {
             console.error('Failed to decrement life:', data.error);
         }
     })
     .catch(error => console.error('Error:', error));
+}
+
+// Show out of lives modal
+function showOutOfLivesModal() {
+    const modal = document.getElementById('out-of-lives-modal');
+    modal.classList.add('show');
+    
+    // Disable all quiz interactions
+    const options = document.querySelectorAll('.option-button');
+    options.forEach(opt => opt.disabled = true);
+    // Also hide the main quiz card content to prevent interaction
+    document.getElementById('question').style.display = 'none';
+    document.getElementById('choices').style.display = 'none';
 }
 
 function hideFeedbackBanner() {
@@ -219,42 +249,59 @@ async function quizCompleted(lessonKeyForThisQuiz) {
 
 
 // --- Event Setup ---
-window.onload = loadQuestion;
-
-const skipButton = document.getElementById('skip-button');
-const skipModal = document.getElementById('skip-modal');
-const cancelSkip = document.getElementById('cancel-skip');
-const confirmSkip = document.getElementById('confirm-skip');
-
-skipButton.addEventListener('click', () => {
-    skipModal.classList.add('show');
-});
-
-cancelSkip.addEventListener('click', () => {
-    skipModal.classList.remove('show');
-});
-
-confirmSkip.addEventListener('click', async () => {
-    try {
-        await fetch('/save-session-results', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-                type: 'game',
-                xp: 0,
-                accuracy: 0,
-                skipped: true
-            })
-        });
-    } catch (error) {
-        console.error('Failed to mark game as skipped:', error);
+document.addEventListener('DOMContentLoaded', () => {
+    // Check initial lives when the page loads
+    const livesCountElement = document.getElementById('lives-count');
+    if (livesCountElement) {
+        const initialLives = parseInt(livesCountElement.innerText, 10);
+        if (initialLives <= 0) {
+            // If out of lives, show modal and stop everything else
+            showOutOfLivesModal();
+            return; 
+        }
     }
-    window.location.href = '/ml_game';
-});
 
-// Close modal when clicking outside
-skipModal.addEventListener('click', (e) => {
-    if (e.target === skipModal) {
-        skipModal.classList.remove('show');
+    // If the user has lives, proceed to load the first question
+    loadQuestion();
+
+    // Setup for Skip Modal
+    const skipButton = document.getElementById('skip-button');
+    const skipModal = document.getElementById('skip-modal');
+    const cancelSkip = document.getElementById('cancel-skip');
+    const confirmSkip = document.getElementById('confirm-skip');
+
+    if (skipButton && skipModal && cancelSkip && confirmSkip) {
+        skipButton.addEventListener('click', () => {
+            skipModal.classList.add('show');
+        });
+
+        cancelSkip.addEventListener('click', () => {
+            skipModal.classList.remove('show');
+        });
+
+        confirmSkip.addEventListener('click', async () => {
+            try {
+                await fetch('/save-session-results', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        type: 'game',
+                        xp: 0,
+                        accuracy: 0,
+                        skipped: true
+                    })
+                });
+            } catch (error) {
+                console.error('Failed to mark game as skipped:', error);
+            }
+            window.location.href = '/ml_game';
+        });
+
+        // Close modal when clicking outside
+        skipModal.addEventListener('click', (e) => {
+            if (e.target === skipModal) {
+                skipModal.classList.remove('show');
+            }
+        });
     }
 });

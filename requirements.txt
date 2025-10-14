@@ -76,3 +76,4 @@ wrapt==1.14.1
 email-validator==2.2.0
 gunicorn==22.0.0
 Flask-Mail==0.10.0
+pytz==2025.2

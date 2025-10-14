@@ -47,7 +47,7 @@
                 <div class="profile-circle-sidebar">{{ initials }}</div>
                 <div class="profile-info">
                     <span id="profileName">{{ full_name }}</span>
-                    <span class="profile-id">@ab93f1x</span>
+                    <span class="profile-id">{{user.username}}</span>
                 </div>
             </a>
             <a class="logout-link" href="/logout">
@@ -79,7 +79,7 @@
                     <div class="profile-image">{{ initials }}</div>
                     <div class="profile-info">
                         <h3>{{ current_user_data.name if current_user_data else 'Username' }}</h3>
-                        <span class="user-id">@ab93f1x</span>
+                        <span class="user-id">{{user.username}}</span>
                         <p>Manage your profile information and account settings below.</p>
                     </div>
                 </div>
