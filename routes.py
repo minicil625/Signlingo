@@ -221,6 +221,9 @@ def dashboard():
         user=user
     )
 
+@auth_bp.route('/start', methods=['GET', 'POST'])
+def start():
+    render_template('start.html')
 
 @auth_bp.route('/roadmap', methods=['GET', 'POST'])
 def roadmap():
