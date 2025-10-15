@@ -28,9 +28,9 @@ def get_random_question(questions):
 def get_set_question(level, questions):
     # session['question_index'] += 1
     sets = {
-        '1': list(range(1, 11)),    # Set 1 → questions 1–9
-        '2': list(range(11, 21)),   # Set 2 → questions 10–17
-        '3': list(range(19, 27))    # Set 3 → questions 18–25
+        '1': [1, 4, 7, 10, 13, 16, 19, 22, 25, 1],    # Set 1 → questions 1–9
+        '2': [2, 5, 8, 11, 14, 17, 20, 23, 26, 2],   # Set 2 → questions 10–17
+        '3': [3, 6, 9, 12, 15, 18, 21, 24, 4, 5]    # Set 3 → questions 18–25
     }
 
     selected_ids = sets.get(level, sets['1'])
